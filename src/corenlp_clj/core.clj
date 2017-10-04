@@ -7,15 +7,20 @@
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
 
-(def dep-types {:basic SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
-                :enhanced SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-                :enhanced++ SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation})
+(def dependency-types
+  {:basic SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
+   :enhanced SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
+   :enhanced++ SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation})
 
 (defn properties
   [& args]
   (let [props (Properties.)]
     (.putAll props (apply hash-map args))
     props))
+
+;; necessary properties for loading depparse
+(def depparse
+  (properties "annotators" "tokenize, ssplit, pos, depparse"))
 
 (defn pipeline
   [^Properties props]
@@ -37,7 +42,7 @@
 
 (defn dependencies
   ([^Annotation annotation type]
-   (.get annotation (dep-types type)))
+   (.get annotation (dependency-types type)))
   ([^Annotation annotation]
    (dependencies annotation :enhanced++)))
 
