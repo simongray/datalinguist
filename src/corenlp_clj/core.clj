@@ -18,9 +18,11 @@
     (.putAll props (apply hash-map args))
     props))
 
-;; necessary properties for loading depparse
-(def depparse
-  (properties "annotators" "tokenize, ssplit, pos, depparse"))
+(defn prerequisites
+  ([xs ^Properties props]
+   (StanfordCoreNLP/ensurePrerequisiteAnnotators (into-array xs) props))
+  ([xs]
+   (prerequisites xs (Properties.))))
 
 (defn pipeline
   [^Properties props]
@@ -50,3 +52,7 @@
    (map #(dependencies % type) (sentences (process pipeline s))))
   ([^StanfordCoreNLP pipeline ^String s]
    (dep pipeline s :enhanced++)))
+
+;; necessary properties for loading depparse
+(def depparse
+  (properties "annotators" (prerequisites ["depparse"])))
