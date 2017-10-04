@@ -10,7 +10,7 @@
 (def example "This is just an example sentence in English. This is another.")
 
 ;; the long way of getting a dependency graph
-(def deps-long (map dependencies (sentences (annotation nlp example))))
+(def deps-long (map dependencies (sentences (process nlp example))))
 
 ;; the short way of getting a dependency graph
 (def deps (dep nlp example))
