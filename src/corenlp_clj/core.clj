@@ -42,7 +42,7 @@
    (dependencies annotation :enhanced++)))
 
 (defn dep
-  "Shorthand version of dependencies function that operates directly on a String s."
+  "Shorthand version of the dependencies function; operates directly on a String s."
   ([^StanfordCoreNLP pipeline ^String s type]
    (map #(dependencies % type) (sentences (annotation pipeline s))))
   ([^StanfordCoreNLP pipeline ^String s]
