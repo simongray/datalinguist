@@ -26,7 +26,7 @@
   [^Properties props]
   (StanfordCoreNLP. props))
 
-(defn annotation
+(defn process
   [^StanfordCoreNLP pipeline ^String s]
   (.process pipeline s))
 
@@ -47,6 +47,6 @@
 (defn dep
   "Shorthand version of the dependencies function; operates directly on a String s."
   ([^StanfordCoreNLP pipeline ^String s type]
-   (map #(dependencies % type) (sentences (annotation pipeline s))))
+   (map #(dependencies % type) (sentences (process pipeline s))))
   ([^StanfordCoreNLP pipeline ^String s]
    (dep pipeline s :enhanced++)))
