@@ -28,9 +28,7 @@
 
 (defn annotation
   [^StanfordCoreNLP pipeline ^String s]
-  (let [annotation (Annotation. s)]
-    (.annotate pipeline annotation) ; mutating!
-    annotation))
+  (.process pipeline s))
 
 (defn sentences
   [^Annotation annotation]
