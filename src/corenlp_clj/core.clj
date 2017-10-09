@@ -2,57 +2,39 @@
   (:import [java.util Properties]
            [edu.stanford.nlp.pipeline StanfordCoreNLP Annotation]
            [edu.stanford.nlp.ling CoreAnnotations$SentencesAnnotation
-                                  CoreAnnotations$TokensAnnotation]
-           [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
-                                      SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
-
-(def dependency-types
-  {:basic SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
-   :enhanced SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-   :enhanced++ SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation})
+                                  CoreAnnotations$TokensAnnotation]))
 
 (defn properties
-  [& args]
+  "Convenience function for making a Properties object based on a Clojure map m."
+  [m]
   (let [props (Properties.)]
-    (.putAll props (apply hash-map args))
+    (.putAll props m)
     props))
 
 (defn prerequisites
-  ([xs ^Properties props]
-   (StanfordCoreNLP/ensurePrerequisiteAnnotators (into-array xs) props))
-  ([xs]
-   (prerequisites xs (Properties.))))
+  "Find the prerequisities for the specified pipeline setup or a single annotator."
+  ([xs m]
+   (StanfordCoreNLP/ensurePrerequisiteAnnotators (into-array xs) (properties m)))
+  ([x]
+   (if (string? x)
+     (prerequisites [x] {})
+     (prerequisites x {}))))
 
 (defn pipeline
-  [^Properties props]
-  (StanfordCoreNLP. props))
+  "Wraps a closure around a custom CoreNLP pipeline (as specified in m).
+  The function returned is used to annotate a String of text."
+  [m]
+  (let [stanford-core-nlp (StanfordCoreNLP. ^Properties (properties m))]
+    (fn [^String s] (.process stanford-core-nlp s))))
 
-(defn process
-  [^StanfordCoreNLP pipeline ^String s]
-  (.process pipeline s))
+(defn annotation
+  "Access the annotation of x as specified by class."
+  [x ^Class class]
+  (if (seqable? x)
+    (map #(.get ^Annotation % class) x)
+    (.get ^Annotation x class)))
 
-(defn sentences
-  [^Annotation annotation]
-  (.get annotation CoreAnnotations$SentencesAnnotation))
-
-(defn tokens
-  [^Annotation annotation]
-  (.get annotation CoreAnnotations$TokensAnnotation))
-
-(defn dependencies
-  ([^Annotation annotation type]
-   (.get annotation (dependency-types type)))
-  ([^Annotation annotation]
-   (dependencies annotation :enhanced++)))
-
-(defn dep
-  "Shorthand version of the dependencies function; operates directly on a String s."
-  ([^StanfordCoreNLP pipeline ^String s type]
-   (map #(dependencies % type) (sentences (process pipeline s))))
-  ([^StanfordCoreNLP pipeline ^String s]
-   (dep pipeline s :enhanced++)))
-
-;; necessary properties for loading depparse
-(def depparse
-  (properties "annotators" (prerequisites ["depparse"])))
+;; convenience functions for accessing core annotations
+;; these allow chaining using threading macros or function composition
+(def sentences #(annotation % CoreAnnotations$SentencesAnnotation))
+(def tokens #(annotation % CoreAnnotations$TokensAnnotation))

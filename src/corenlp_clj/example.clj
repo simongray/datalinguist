@@ -1,16 +1,19 @@
 (ns corenlp-clj.example
-  (:require [corenlp-clj.core :refer :all]))
+  (:require [corenlp-clj.core :refer :all]
+            [corenlp-clj.semgraph :refer [dependencies]]))
 
-;; the long way of setting up the dependency parse annotator
-;(def nlp (pipeline (properties "annotators" "tokenize, ssplit, pos, depparse")))
+;; loading a dependency parsing pipeline
+(def nlp (pipeline {"annotators" (prerequisites "depparse")}))
 
-;; the short way of setting up the dependency parse annotator
-(def nlp (pipeline depparse))
+(def example "This is an example sentence. That is another.")
 
-(def example "This is just an example sentence in English. This is another.")
+;; accessing various annotations
+(def example-tokens (-> example
+                        nlp
+                        sentences
+                        tokens))
 
-;; the long way of getting a dependency graph
-(def deps-long (map dependencies (sentences (process nlp example))))
-
-;; the short way of getting a dependency graph
-(def deps (dep nlp example))
+(def example-dependencies (-> example
+                              nlp
+                              sentences
+                              dependencies))
