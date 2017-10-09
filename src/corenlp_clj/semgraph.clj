@@ -4,12 +4,13 @@
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
 
-(def basic SemanticGraphCoreAnnotations$BasicDependenciesAnnotation)
-(def enhanced SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation)
-(def enchanced++ SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation)
-
 (defn dependencies
-  ([x class]
-   (annotation x class))
+  "Defaults to enhanced++ dependencies."
+  ([type x]
+   (cond
+     (= type :basic) (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
+     (= type :enhanced) (annotation SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation x)
+     (= type :enhanced++) (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)
+     :else (throw (IllegalArgumentException. "type must be :basic, :enhanced or :enhanced++"))))
   ([x]
-   (dependencies x enchanced++)))
+   (dependencies :enhanced++ x)))

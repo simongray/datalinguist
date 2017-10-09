@@ -6,7 +6,10 @@
                                   CoreAnnotations$PartOfSpeechAnnotation
                                   CoreAnnotations$NamedEntityTagAnnotation
                                   CoreAnnotations$SentencesAnnotation
-                                  CoreAnnotations$TokensAnnotation CoreAnnotations$NamedEntityTagAnnotation]))
+                                  CoreAnnotations$TokensAnnotation
+                                  CoreAnnotations$NamedEntityTagAnnotation
+                                  CoreAnnotations$BeforeAnnotation
+                                  CoreAnnotations$AfterAnnotation]))
 
 (defn properties
   "Convenience function for making a Properties object based on a Clojure map m."
@@ -33,16 +36,26 @@
 
 (defn annotation
   "Access the annotation of x as specified by class."
-  [x ^Class class]
+  [^Class class x]
   (if (seqable? x)
-    (map #(annotation % class) x) ; no tail recursion!
+    (map #(annotation class %) x) ; no tail recursion!
     (.get ^Annotation x class)))
 
-;; convenience functions for accessing core annotations
+;; convenience functions for accessing common core annotations
 ;; easy chaining using threading macros or function composition
-(def text #(annotation % CoreAnnotations$TextAnnotation))
-(def lemma #(annotation % CoreAnnotations$LemmaAnnotation))
-(def pos #(annotation % CoreAnnotations$PartOfSpeechAnnotation))
-(def ner #(annotation % CoreAnnotations$NamedEntityTagAnnotation))
-(def sentences #(annotation % CoreAnnotations$SentencesAnnotation))
-(def tokens #(annotation % CoreAnnotations$TokensAnnotation))
+(def text (partial annotation CoreAnnotations$TextAnnotation))
+(def lemma (partial annotation CoreAnnotations$LemmaAnnotation))
+(def pos (partial annotation CoreAnnotations$PartOfSpeechAnnotation))
+(def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
+(def sentences (partial annotation CoreAnnotations$SentencesAnnotation))
+(def tokens (partial annotation CoreAnnotations$TokensAnnotation))
+
+(defn whitespace
+  "Defaults to whitespace before."
+  ([type x]
+   (cond
+     (= type :before) (annotation CoreAnnotations$BeforeAnnotation x)
+     (= type :after) (annotation CoreAnnotations$AfterAnnotation x)
+     :else (throw (IllegalArgumentException. "type must be :before or :after"))))
+  ([x]
+   (whitespace :before x)))
