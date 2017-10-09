@@ -1,9 +1,17 @@
 (ns corenlp-clj.example
-  (:require [corenlp-clj.core :refer [pipeline prerequisites]]
-            [corenlp-clj.annotations :refer [sentences tokens pos ner lemma text index whitespace dependencies]]))
+  (:require [corenlp-clj.core :refer [pipeline prerequisites annotation]]
+            [corenlp-clj.annotations :refer [sentences tokens pos ner lemma text index whitespace dependencies]])
+  (:import (edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation)))
 
 ;; create a custom Stanford CoreNLP pipeline
 (def nlp (pipeline {"annotators" (prerequisites ["depparse" "lemma" "ner"])}))
+
+;; using class names
+(->> "Any annotation can be accessed using the proper Annotation class name."
+     nlp
+     tokens
+     (annotation CoreAnnotations$PartOfSpeechAnnotation))
+;=> ("DT" "NN" "MD" "VB" "VBN" "VBG" "DT" "JJ" "NNP" "NN" "NN" ".")
 
 ;; parts of speech
 (->> "This is an example sentence. That is another." nlp sentences tokens pos)
