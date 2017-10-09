@@ -1,15 +1,6 @@
 (ns corenlp-clj.core
   (:import [java.util Properties]
-           [edu.stanford.nlp.pipeline StanfordCoreNLP Annotation]
-           [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
-                                  CoreAnnotations$LemmaAnnotation
-                                  CoreAnnotations$PartOfSpeechAnnotation
-                                  CoreAnnotations$NamedEntityTagAnnotation
-                                  CoreAnnotations$SentencesAnnotation
-                                  CoreAnnotations$TokensAnnotation
-                                  CoreAnnotations$NamedEntityTagAnnotation
-                                  CoreAnnotations$BeforeAnnotation
-                                  CoreAnnotations$AfterAnnotation]))
+           [edu.stanford.nlp.pipeline StanfordCoreNLP Annotation]))
 
 (defn properties
   "Convenience function for making a Properties object based on a Clojure map m."
@@ -40,22 +31,3 @@
   (if (seqable? x)
     (map #(annotation class %) x) ; no tail recursion!
     (.get ^Annotation x class)))
-
-;; convenience functions for accessing common core annotations
-;; easy chaining using threading macros or function composition
-(def text (partial annotation CoreAnnotations$TextAnnotation))
-(def lemma (partial annotation CoreAnnotations$LemmaAnnotation))
-(def pos (partial annotation CoreAnnotations$PartOfSpeechAnnotation))
-(def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
-(def sentences (partial annotation CoreAnnotations$SentencesAnnotation))
-(def tokens (partial annotation CoreAnnotations$TokensAnnotation))
-
-(defn whitespace
-  "Defaults to whitespace before."
-  ([type x]
-   (cond
-     (= type :before) (annotation CoreAnnotations$BeforeAnnotation x)
-     (= type :after) (annotation CoreAnnotations$AfterAnnotation x)
-     :else (throw (IllegalArgumentException. "type must be :before or :after"))))
-  ([x]
-   (whitespace :before x)))

@@ -1,8 +1,8 @@
 (ns corenlp-clj.example
-  (:require [corenlp-clj.core :refer [pipeline prerequisites sentences tokens pos ner lemma text whitespace]]
-            [corenlp-clj.semgraph :refer [dependencies]]))
+  (:require [corenlp-clj.core :refer [pipeline prerequisites]]
+            [corenlp-clj.annotations :refer [sentences tokens pos ner lemma text whitespace dependencies]]))
 
-;; pipeline for dependency parsing, lemmatisation and named entity recognition
+;; create a custom Stanford CoreNLP pipeline
 (def nlp (pipeline {"annotators" (prerequisites ["depparse" "lemma" "ner"])}))
 
 ;; parts of speech
