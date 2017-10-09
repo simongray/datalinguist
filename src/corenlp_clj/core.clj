@@ -1,8 +1,12 @@
 (ns corenlp-clj.core
   (:import [java.util Properties]
            [edu.stanford.nlp.pipeline StanfordCoreNLP Annotation]
-           [edu.stanford.nlp.ling CoreAnnotations$SentencesAnnotation
-                                  CoreAnnotations$TokensAnnotation]))
+           [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
+                                  CoreAnnotations$LemmaAnnotation
+                                  CoreAnnotations$PartOfSpeechAnnotation
+                                  CoreAnnotations$NamedEntityTagAnnotation
+                                  CoreAnnotations$SentencesAnnotation
+                                  CoreAnnotations$TokensAnnotation CoreAnnotations$NamedEntityTagAnnotation]))
 
 (defn properties
   "Convenience function for making a Properties object based on a Clojure map m."
@@ -36,5 +40,9 @@
 
 ;; convenience functions for accessing core annotations
 ;; these allow chaining using threading macros or function composition
+(def text #(annotation % CoreAnnotations$TextAnnotation))
+(def lemma #(annotation % CoreAnnotations$LemmaAnnotation))
+(def pos #(annotation % CoreAnnotations$PartOfSpeechAnnotation))
+(def ner #(annotation % CoreAnnotations$NamedEntityTagAnnotation))
 (def sentences #(annotation % CoreAnnotations$SentencesAnnotation))
 (def tokens #(annotation % CoreAnnotations$TokensAnnotation))
