@@ -8,7 +8,8 @@
                                   CoreAnnotations$TokensAnnotation
                                   CoreAnnotations$NamedEntityTagAnnotation
                                   CoreAnnotations$BeforeAnnotation
-                                  CoreAnnotations$AfterAnnotation]
+                                  CoreAnnotations$AfterAnnotation
+                                  CoreAnnotations$IndexAnnotation]
            [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
@@ -24,6 +25,7 @@
 (def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
 (def sentences (partial annotation CoreAnnotations$SentencesAnnotation))
 (def tokens (partial annotation CoreAnnotations$TokensAnnotation))
+(def index (partial annotation CoreAnnotations$IndexAnnotation))
 
 (defn whitespace
   "Defaults to whitespace before."

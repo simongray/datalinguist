@@ -1,6 +1,6 @@
 (ns corenlp-clj.example
   (:require [corenlp-clj.core :refer [pipeline prerequisites]]
-            [corenlp-clj.annotations :refer [sentences tokens pos ner lemma text whitespace dependencies]]))
+            [corenlp-clj.annotations :refer [sentences tokens pos ner lemma text index whitespace dependencies]]))
 
 ;; create a custom Stanford CoreNLP pipeline
 (def nlp (pipeline {"annotators" (prerequisites ["depparse" "lemma" "ner"])}))
@@ -20,6 +20,10 @@
 ;; words
 (->> "You can also just get the words." nlp tokens text)
 ;=> ("You" "can" "also" "just" "get" "the" "words" ".")
+
+;; word indexes
+(->> "Word indexes start from 1." nlp tokens index)
+;=> (1 2 3 4 5 6)
 
 ;; whitespace (defaults to before)
 (->> "   A sentence   with whitespace.   " nlp tokens whitespace)
