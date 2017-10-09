@@ -39,7 +39,7 @@
     (.get ^Annotation x class)))
 
 ;; convenience functions for accessing core annotations
-;; these allow chaining using threading macros or function composition
+;; easy chaining using threading macros or function composition
 (def text #(annotation % CoreAnnotations$TextAnnotation))
 (def lemma #(annotation % CoreAnnotations$LemmaAnnotation))
 (def pos #(annotation % CoreAnnotations$PartOfSpeechAnnotation))
