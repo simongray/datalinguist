@@ -19,8 +19,7 @@
      (prerequisites x {}))))
 
 (defn pipeline
-  "Wraps a closure around a custom CoreNLP pipeline (as specified in m).
-  The function returned is used to annotate a String of text."
+  "Wraps a closure around a custom CoreNLP pipeline (as specified in m)."
   [m]
   (let [stanford-core-nlp (StanfordCoreNLP. ^Properties (properties m))]
     (fn [^String s] (.process stanford-core-nlp s))))
