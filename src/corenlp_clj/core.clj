@@ -31,7 +31,7 @@
   "Access the annotation of x as specified by class."
   [x ^Class class]
   (if (seqable? x)
-    (map #(.get ^Annotation % class) x)
+    (map #(annotation % class) x) ; no tail recursion!
     (.get ^Annotation x class)))
 
 ;; convenience functions for accessing core annotations
