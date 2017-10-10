@@ -1,6 +1,6 @@
 (ns corenlp-clj.core
   (:import [java.util Properties]
-           [edu.stanford.nlp.pipeline StanfordCoreNLP Annotation]))
+           [edu.stanford.nlp.pipeline StanfordCoreNLP]))
 
 (defn properties
   "Convenience function for making a Properties object based on a Clojure map m."
@@ -23,10 +23,3 @@
   [m]
   (let [stanford-core-nlp (StanfordCoreNLP. ^Properties (properties m))]
     (fn [^String s] (.process stanford-core-nlp s))))
-
-(defn annotation
-  "Access the annotation of x as specified by class."
-  [^Class class x]
-  (if (seqable? x)
-    (map #(annotation class %) x) ; no tail recursion!
-    (.get ^Annotation x class)))

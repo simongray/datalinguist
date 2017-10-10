@@ -1,6 +1,6 @@
 (ns corenlp-clj.annotations
-  (:require [corenlp-clj.core :refer [annotation]])
-  (:import [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
+  (:import [edu.stanford.nlp.pipeline Annotation]
+           [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
                                   CoreAnnotations$LemmaAnnotation
                                   CoreAnnotations$PartOfSpeechAnnotation
                                   CoreAnnotations$NamedEntityTagAnnotation
@@ -19,6 +19,13 @@
 ;; The functions are designed to be chained using the ->> macro or through function composition.
 ;; Please note that _any_ annotation can be accessed using the annotation function in corenlp-clj.core,
 ;; you are not just limited to using these convenience functions.
+
+(defn annotation
+  "Access the annotation of x as specified by class."
+  [^Class class x]
+  (if (seqable? x)
+    (map #(annotation class %) x) ; no tail recursion!
+    (.get ^Annotation x class)))
 
 (def text (partial annotation CoreAnnotations$TextAnnotation))
 (def lemma (partial annotation CoreAnnotations$LemmaAnnotation))

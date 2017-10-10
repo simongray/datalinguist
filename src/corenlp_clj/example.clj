@@ -1,6 +1,6 @@
 (ns corenlp-clj.example
-  (:require [corenlp-clj.core :refer [pipeline prerequisites annotation]]
-            [corenlp-clj.annotations :refer [sentences tokens pos ner lemma text index whitespace dependencies]])
+  (:require [corenlp-clj.core :refer :all]
+            [corenlp-clj.annotations :refer :all])
   (:import (edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation)))
 
 ;; create a custom Stanford CoreNLP pipeline
