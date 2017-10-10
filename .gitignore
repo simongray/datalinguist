@@ -108,3 +108,6 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/macos,clojure,intellij,leiningen
+
+# for debugging
+StanfordCoreNLP-chinese.properties
