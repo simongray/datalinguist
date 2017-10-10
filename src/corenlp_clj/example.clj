@@ -29,9 +29,13 @@
 (->> "You can also just get the words." nlp tokens text)
 ;=> ("You" "can" "also" "just" "get" "the" "words" ".")
 
-;; word indexes
+;; indexes (defaults to token)
 (->> "Word indexes start from 1." nlp tokens index)
 ;=> (1 2 3 4 5 6)
+
+(->> "Word indexes start from 1. Sentences start from 0."
+     nlp tokens (index :sentence))
+;=> (0 0 0 0 0 0 1 1 1 1 1)
 
 ;; whitespace (defaults to before)
 (->> "   A sentence   with whitespace.   " nlp tokens whitespace)

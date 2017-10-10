@@ -9,7 +9,8 @@
                                   CoreAnnotations$NamedEntityTagAnnotation
                                   CoreAnnotations$BeforeAnnotation
                                   CoreAnnotations$AfterAnnotation
-                                  CoreAnnotations$IndexAnnotation]
+                                  CoreAnnotations$IndexAnnotation
+                                  CoreAnnotations$SentenceIndexAnnotation]
            [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
@@ -25,7 +26,16 @@
 (def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
 (def sentences (partial annotation CoreAnnotations$SentencesAnnotation))
 (def tokens (partial annotation CoreAnnotations$TokensAnnotation))
-(def index (partial annotation CoreAnnotations$IndexAnnotation))
+
+(defn index
+  "Defaults to token index."
+  ([type x]
+   (cond
+     (= type :token) (annotation CoreAnnotations$IndexAnnotation x)
+     (= type :sentence) (annotation CoreAnnotations$SentenceIndexAnnotation x)
+     :else (throw (IllegalArgumentException. "type must be :token or :sentence"))))
+  ([x]
+   (index :token x)))
 
 (defn whitespace
   "Defaults to whitespace before."
