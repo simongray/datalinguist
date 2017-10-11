@@ -33,5 +33,6 @@
     (dest [edge] (.getTarget edge)))
 
 (defn root
+  "The root node - typically a verb - of the graph."
   [^SemanticGraph g]
   (.getFirstRoot g))
