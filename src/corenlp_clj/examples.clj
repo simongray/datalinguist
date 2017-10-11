@@ -1,6 +1,7 @@
-(ns corenlp-clj.example
+(ns corenlp-clj.examples
   (:require [corenlp-clj.core :refer :all]
-            [corenlp-clj.annotations :refer :all])
+            [corenlp-clj.annotations :refer :all]
+            [corenlp-clj.semgraph :refer :all])
   (:import (edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation)))
 
 
@@ -79,6 +80,14 @@
 ;               -> dependencies/NNS (dobj)
 ;               -> ./. (punct)
 ;             "])
+
+;; viewing a visualisation of sentence dependencies (requires Graphviz)
+(view (->> "The dependencies of this sentence have been visualised using Graphviz."
+           nlp
+           sentences
+           dependencies
+           first))
+;=> https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png
 
 
 ;;;; CHINESE SECTION
