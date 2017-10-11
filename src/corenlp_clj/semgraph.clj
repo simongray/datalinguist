@@ -7,11 +7,13 @@
 (defn- flip
   "Returns a TypedDependency with governor and dependent flipped."
   [^TypedDependency td]
-  ;; the ROOT node isn't a real node and should not be flipped
+  ;; note: ROOT isn't a real node, it is just used to mark the root node
   (if (= (.reln td) (GrammaticalRelation/ROOT))
     (TypedDependency. (.reln td) (.gov td) (.dep td))
     (TypedDependency. (.reln td) (.dep td) (.gov td))))
 
+;; SemanticGraph represents a dependency graph in Stanford CoreNLP
+;; extended here to be compatible with the graph functions in Loom
 (extend-type SemanticGraph
   Graph
     (nodes [g] (.vertexSet g))
@@ -33,6 +35,11 @@
     (dest [edge] (.getTarget edge)))
 
 (defn root
-  "The root node - typically a verb - of the graph."
+  "The root node of a dependency graph."
   [^SemanticGraph g]
   (.getFirstRoot g))
+
+(defn relation
+  "The grammatical relation represented by an edge in a dependency graph."
+  [^SemanticGraphEdge edge]
+  (.getRelation edge))
