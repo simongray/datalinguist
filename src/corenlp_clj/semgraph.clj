@@ -1,5 +1,5 @@
 (ns corenlp-clj.semgraph
-  (:require [loom.graph :refer [Graph Digraph]])
+  (:require [loom.graph :refer [Graph Digraph Edge]])
   (:import [edu.stanford.nlp.semgraph SemanticGraph SemanticGraphEdge]
            [edu.stanford.nlp.trees TypedDependency GrammaticalRelation]
            [java.util Collection]))
@@ -26,3 +26,8 @@
     (in-degree [g node] (.inDegree g node))
     (in-edges [g node] (.incomingEdgeList g node))
     (transpose [g] (SemanticGraph. ^Collection (map flip (.typedDependencies g)))))
+
+(extend-type SemanticGraphEdge
+  Edge
+    (src [edge] (.getSource edge))
+    (dest [edge] (.getTarget edge)))
