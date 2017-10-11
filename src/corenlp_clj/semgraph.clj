@@ -12,35 +12,6 @@
   [^SemanticGraph g]
   (.getFirstRoot g))
 
-;; Unfortunately, loom.io/dot-str implicitly requires edges represented as vectors,
-;; so it cannot be used to create dot-formats for a SemanticGraph object
-(defn dot-format
-  "The GraphViz dot-format of a dependency graph (SemanticGraph)."
-  [^SemanticGraph g]
-  (.toDotFormat g))
-
-;; Re-implementation of loom.io/render-to-bytes using dot-format instead of loom.io/dot-str.
-(defn render-to-bytes
-  "Renders the graph g in the image format using GraphViz and returns data
-  as a byte array.
-  Requires GraphViz's 'dot' (or a specified algorithm) to be installed in
-  the shell's path. Possible algorithms include :dot, :neato, :fdp, :sfdp,
-  :twopi, and :circo. Possible formats include :png, :ps, :pdf, and :svg."
-  [g & {:keys [alg fmt] :or {alg "dot" fmt :png} :as opts}]
-  (let [dot-graph (dot-format g)
-        cmd (sh (name alg) (str "-T" (name fmt)) :in dot-graph :out-enc :bytes)]
-    (:out cmd)))
-
-;; Re-implementation of loom.io/view using dot-format instead of loom.io/dot-strr.
-(defn view
-  "Converts graph g to a temporary image file using GraphViz and opens it
-  in the current desktop environment's default viewer for said files.
-  Requires GraphViz's 'dot' (or a specified algorithm) to be installed in
-  the shell's path. Possible algorithms include :dot, :neato, :fdp, :sfdp,
-  :twopi, and :circo. Possible formats include :png, :ps, :pdf, and :svg."
-  [g & {:keys [fmt] :or {fmt :png} :as opts}]
-  (#'loom.io/open-data (apply render-to-bytes g opts) fmt)) ; using #' since function is private
-
 ;; Note: src and dest are implemented further down as implementations of loom.graph/Edge.
 (defn reln
   "The grammatical relation labeling an edge (SemanticGraphEdge) in a dependency graph."
@@ -88,3 +59,32 @@
   Edge
     (src [edge] (.getSource edge))
     (dest [edge] (.getTarget edge)))
+
+;; Unfortunately, loom.io/dot-str implicitly requires edges represented as vectors,
+;; so it cannot be used to create dot-formats for a SemanticGraph object
+(defn dot-format
+  "The GraphViz dot-format of a dependency graph (SemanticGraph)."
+  [^SemanticGraph g]
+  (.toDotFormat g))
+
+;; Re-implementation of loom.io/render-to-bytes using dot-format instead of loom.io/dot-str.
+(defn render-to-bytes
+  "Renders the graph g in the image format using GraphViz and returns data
+  as a byte array.
+  Requires GraphViz's 'dot' (or a specified algorithm) to be installed in
+  the shell's path. Possible algorithms include :dot, :neato, :fdp, :sfdp,
+  :twopi, and :circo. Possible formats include :png, :ps, :pdf, and :svg."
+  [g & {:keys [alg fmt] :or {alg "dot" fmt :png} :as opts}]
+  (let [dot-graph (dot-format g)
+        cmd (sh (name alg) (str "-T" (name fmt)) :in dot-graph :out-enc :bytes)]
+    (:out cmd)))
+
+;; Re-implementation of loom.io/view using dot-format instead of loom.io/dot-str.
+(defn view
+  "Converts graph g to a temporary image file using GraphViz and opens it
+  in the current desktop environment's default viewer for said files.
+  Requires GraphViz's 'dot' (or a specified algorithm) to be installed in
+  the shell's path. Possible algorithms include :dot, :neato, :fdp, :sfdp,
+  :twopi, and :circo. Possible formats include :png, :ps, :pdf, and :svg."
+  [g & {:keys [fmt] :or {fmt :png} :as opts}]
+  (#'loom.io/open-data (apply render-to-bytes g opts) fmt)) ; using #' since function is private
