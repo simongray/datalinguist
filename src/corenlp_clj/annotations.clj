@@ -36,31 +36,31 @@
 
 (defn index
   "Defaults to token index."
-  ([type x]
+  ([category x]
    (cond
-     (= type :token) (annotation CoreAnnotations$IndexAnnotation x)
-     (= type :sentence) (annotation CoreAnnotations$SentenceIndexAnnotation x)
-     :else (throw (IllegalArgumentException. "type must be :token or :sentence"))))
+     (= category :token) (annotation CoreAnnotations$IndexAnnotation x)
+     (= category :sentence) (annotation CoreAnnotations$SentenceIndexAnnotation x)
+     :else (throw (IllegalArgumentException. "category must be :token or :sentence"))))
   ([x]
    (index :token x)))
 
 (defn whitespace
   "Defaults to whitespace before."
-  ([type x]
+  ([category x]
    (cond
-     (= type :before) (annotation CoreAnnotations$BeforeAnnotation x)
-     (= type :after) (annotation CoreAnnotations$AfterAnnotation x)
-     :else (throw (IllegalArgumentException. "type must be :before or :after"))))
+     (= category :before) (annotation CoreAnnotations$BeforeAnnotation x)
+     (= category :after) (annotation CoreAnnotations$AfterAnnotation x)
+     :else (throw (IllegalArgumentException. "category must be :before or :after"))))
   ([x]
    (whitespace :before x)))
 
 (defn dependencies
   "Defaults to enhanced++ dependencies."
-  ([type x]
+  ([category x]
    (cond
-     (= type :basic) (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
-     (= type :enhanced) (annotation SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation x)
-     (= type :enhanced++) (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)
-     :else (throw (IllegalArgumentException. "type must be :basic, :enhanced or :enhanced++"))))
+     (= category :basic) (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
+     (= category :enhanced) (annotation SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation x)
+     (= category :enhanced++) (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)
+     :else (throw (IllegalArgumentException. "category must be :basic, :enhanced or :enhanced++"))))
   ([x]
    (dependencies :enhanced++ x)))
