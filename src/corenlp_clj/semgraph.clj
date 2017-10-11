@@ -31,3 +31,7 @@
   Edge
     (src [edge] (.getSource edge))
     (dest [edge] (.getTarget edge)))
+
+(defn root
+  [^SemanticGraph g]
+  (.getFirstRoot g))
