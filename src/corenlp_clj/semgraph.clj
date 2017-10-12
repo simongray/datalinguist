@@ -24,11 +24,6 @@
   ([^SemanticGraphEdge edge]
    (reln :long edge)))
 
-(defn word
-  "The word  represented by a node in a dependency graph."
-  [^IndexedWord iword]
-  (.word iword))
-
 (defn root
   "The root node of a dependency graph (SemanticGraph)."
   [^SemanticGraph g]

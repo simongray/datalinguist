@@ -1,5 +1,5 @@
 (ns corenlp-clj.annotations
-  (:import [edu.stanford.nlp.pipeline Annotation]
+  (:import [edu.stanford.nlp.pipeline]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
                                   CoreAnnotations$LemmaAnnotation
                                   CoreAnnotations$PartOfSpeechAnnotation
@@ -11,21 +11,28 @@
                                   CoreAnnotations$AfterAnnotation
                                   CoreAnnotations$IndexAnnotation
                                   CoreAnnotations$SentenceIndexAnnotation]
+           [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
 
-;; This namespace contains convenience functions for accessing the most common annotations of Stanford CoreNLP.
-;; The functions are designed to be chained using the ->> macro or through function composition.
-;; Please note that _any_ annotation can be accessed using the annotation function in corenlp-clj.core,
-;; you are not just limited to using these convenience functions.
+;;;; This namespace contains convenience functions for accessing the most common annotations of Stanford CoreNLP.
+;;;; The functions are designed to be chained using the ->> macro or through function composition.
+;;;; Please note that _any_ annotation can be accessed using corenlp-clj.core/annotation,
+;;;; you are not just limited to using the annotations of the convenience functions provided in this namespace.
+
+;;;; This namespace mirrors the annotation system of Stanford CoreNLP: once your returned object is not a TypesafeMap
+;;;; or a seq of TypesafeMap objects, then that is a cue that you will need functions from another namespace.
+;;;; An example of this might be the _dependencies_ annotation which returns a SemanticGraph object.
+;;;; However, using a function such as corenlp-clj.semgraph/nodes on a SemanticGraph object returns IndexedWord objects
+;;;; which *are* implementations of TypesafeMap. Consequently, the annotation functions can take them as params.
 
 (defn annotation
   "Access the annotation of x as specified by class."
   [^Class class x]
   (if (seqable? x)
     (map #(annotation class %) x) ; no tail recursion!
-    (.get ^Annotation x class)))
+    (.get ^TypesafeMap x class)))
 
 (def text (partial annotation CoreAnnotations$TextAnnotation))
 (def lemma (partial annotation CoreAnnotations$LemmaAnnotation))
