@@ -18,7 +18,8 @@
 ;;;;     * everything! it is simply a wrapper class for CoreLabel
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
-;;;;     * a lot! some of it is cruft, but will need to determine case by case
+;;;;     * toDotFormat: could make better use of formatting
+;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 
 (extend-type SemanticGraphEdge
   Edge
