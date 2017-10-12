@@ -10,7 +10,9 @@
                                   CoreAnnotations$BeforeAnnotation
                                   CoreAnnotations$AfterAnnotation
                                   CoreAnnotations$IndexAnnotation
-                                  CoreAnnotations$SentenceIndexAnnotation]
+                                  CoreAnnotations$SentenceIndexAnnotation
+                                  CoreAnnotations$CharacterOffsetBeginAnnotation
+                                  CoreAnnotations$CharacterOffsetEndAnnotation]
            [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
@@ -40,6 +42,16 @@
 (def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
 (def sentences (partial annotation CoreAnnotations$SentencesAnnotation))
 (def tokens (partial annotation CoreAnnotations$TokensAnnotation))
+
+(defn offset
+  "Defaults to beginning character offset."
+  ([category x]
+   (cond
+     (= category :begin) (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
+     (= category :end) (annotation CoreAnnotations$CharacterOffsetEndAnnotation x)
+     :else (throw (IllegalArgumentException. "category must be :begin or :end"))))
+  ([x]
+   (offset :begin x)))
 
 (defn index
   "Defaults to token index."
