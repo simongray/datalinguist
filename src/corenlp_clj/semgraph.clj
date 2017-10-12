@@ -20,6 +20,9 @@
 ;;;; Properties of SemanticGraph that were left unimplemented:
 ;;;;     * toDotFormat: could make better use of formatting
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
+;;;;
+;;;; Properties of TypedDependency that were left unimplemented:
+;;;;     * everything! it seems mostly just for internal use
 
 (extend-type SemanticGraphEdge
   Edge
