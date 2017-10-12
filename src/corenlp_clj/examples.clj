@@ -1,7 +1,8 @@
 (ns corenlp-clj.examples
   (:require [corenlp-clj.core :refer :all]
             [corenlp-clj.annotations :refer :all]
-            [corenlp-clj.semgraph :refer :all])
+            [corenlp-clj.semgraph :refer :all]
+            [corenlp-clj.io :refer [view]])
   (:import (edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation)))
 
 
