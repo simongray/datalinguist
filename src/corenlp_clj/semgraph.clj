@@ -8,6 +8,17 @@
 
 ;;;; This namespace contains functions relevant for dependency grammar:
 ;;;; graphs (SemanticGraph), nodes (IndexedWord), and edges (SemanticGraphEdge)
+;;;; Mutating functions have deliberately not been implemented!
+;;;;
+;;;; Properties of SemanticGraphEdge that were left unimplemented:
+;;;;     * weight: seems like it isn't used at all
+;;;;     * extra: it's only used internally in some Util function
+;;;;
+;;;; Properties of IndexedWord that were left unimplemented:
+;;;;     * everything! it is simply a wrapper class for CoreLabel
+;;;;
+;;;; Properties of SemanticGraph that were left unimplemented:
+;;;;     * a lot! some of it is cruft, but will need to determine case by case
 
 (extend-type SemanticGraphEdge
   Edge
@@ -23,11 +34,6 @@
      :else (throw (IllegalArgumentException. "long-or-short must be :long or :short"))))
   ([^SemanticGraphEdge edge]
    (reln :long edge)))
-
-(defn root
-  "The root node of a dependency graph (SemanticGraph)."
-  [^SemanticGraph g]
-  (.getFirstRoot g))
 
 (defn- flip
   "Returns a TypedDependency with governor and dependent flipped."
@@ -55,6 +61,11 @@
     (in-degree [g node] (.inDegree g node))
     (in-edges [g node] (.incomingEdgeList g node))
     (transpose [g] (SemanticGraph. ^Collection (map flip (.typedDependencies g)))))
+
+(defn root
+  "The root node of a dependency graph (SemanticGraph)."
+  [^SemanticGraph g]
+  (.getFirstRoot g))
 
 ;; Loom.io/dot-str implicitly requires edges represented as vectors,
 ;; so it cannot be used to create dot-formats for a SemanticGraph object.
