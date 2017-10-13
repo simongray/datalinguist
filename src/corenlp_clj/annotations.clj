@@ -20,7 +20,7 @@
 
 ;;;; This namespace contains convenience functions for accessing the most common annotations of Stanford CoreNLP.
 ;;;; The functions are designed to be chained using the ->> macro or through function composition.
-;;;; Please note that *any* annotation can be accessed using corenlp-clj.core/annotation,
+;;;; Please note that *any* annotation can be accessed using corenlp-clj.annotations/annotation,
 ;;;; you are not just limited to using the annotations of the convenience functions provided in this namespace.
 
 ;;;; This namespace mirrors the annotation system of Stanford CoreNLP: once your returned object is not a TypesafeMap
