@@ -72,7 +72,7 @@
 (->> "A sentence has dependencies."
      nlp
      sentences
-     dependencies)
+     dependency-graph)
 ;=> (#object[edu.stanford.nlp.semgraph.SemanticGraph])
 ;            0x3ed8576b
 ;            "-> has/VBZ (root)
@@ -83,10 +83,10 @@
 ;             "])
 
 ;; viewing a visualisation of sentence dependencies (requires Graphviz)
-(view (->> "The dependencies of this sentence have been visualised using Graphviz."
+(view (->> "The dependency-graph of this sentence have been visualised using Graphviz."
            nlp
            sentences
-           dependencies
+           dependency-graph
            first))
 ;=> https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png
 
@@ -117,7 +117,7 @@
 (->> "先生，你从哪儿来？"
      nlp
      sentences
-     dependencies)
+     dependency-graph)
 ;=>
 ;(#object[edu.stanford.nlp.semgraph.SemanticGraph
 ;         0x128ed8d
