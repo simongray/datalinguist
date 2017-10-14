@@ -83,7 +83,7 @@
 ;             "])
 
 ;; viewing a visualisation of sentence dependencies (requires Graphviz)
-(view (->> "The dependency-graph of this sentence have been visualised using Graphviz."
+(view (->> "The dependencies of this sentence have been visualised using Graphviz."
            nlp
            sentences
            dependency-graph
