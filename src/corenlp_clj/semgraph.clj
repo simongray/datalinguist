@@ -7,22 +7,23 @@
            [java.util Collection]))
 
 ;;;; This namespace contains functions relevant for dependency grammar:
-;;;; graphs (SemanticGraph), nodes (IndexedWord), and edges (SemanticGraphEdge)
-;;;; Mutating functions have deliberately not been implemented!
+;;;;     * graphs (SemanticGraph)
+;;;;     * nodes (IndexedWord)
+;;;;     * edges (SemanticGraphEdge)
+;;;;
+;;;; Mutating functions have deliberately not been implemented.
 ;;;;
 ;;;; Properties of SemanticGraphEdge that were left unimplemented:
 ;;;;     * weight: seems like it isn't used at all
 ;;;;     * extra: it's only used internally in some Util function
 ;;;;
-;;;; Properties of IndexedWord that were left unimplemented:
-;;;;     * everything! it is simply a wrapper class for CoreLabel
-;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
-;;;;     * toDotFormat: could make better use of formatting
+;;;;     * toDotFormat: could make better use of formatting functionality
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 ;;;;
-;;;; Properties of TypedDependency and GrammaticalRelation that were left unimplemented:
+;;;; Properties of IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
 ;;;;     * everything! they seem mostly just for internal use
+;;;;     * IndexedWord is simply a wrapper class for CoreLabel
 
 (extend-type SemanticGraphEdge
   Edge
@@ -47,10 +48,8 @@
     (TypedDependency. (.reln td) (.gov td) (.dep td))
     (TypedDependency. (.reln td) (.dep td) (.gov td))))
 
-;; SemanticGraph represents a dependency graph in Stanford CoreNLP
-;; extended here to be compatible with the graph functions in Loom.
-;; Note: unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors,
-;; so certain functionality is still off-limits despite extending these protocols!
+;; Note: unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors.
+;; Loom functionality that depend on these implicit constraints is still unavailable.
 (extend-type SemanticGraph
   Graph
     (nodes [g] (.vertexSet g))
@@ -71,10 +70,6 @@
   [^SemanticGraph g]
   (.getFirstRoot g))
 
-;; Loom.io/dot-str implicitly requires edges represented as vectors,
-;; so it cannot be used to create dot-formats for a SemanticGraph object.
-;; Fortunately, SemanticGraph already has several methods for creating dot-formats.
-;; To see it, you will need to use the corenlp-clj.io/view rather than loom.io/view.
 (defn dot-format
   "The GraphViz dot-format of a dependency graph (SemanticGraph)."
   [^SemanticGraph g]
