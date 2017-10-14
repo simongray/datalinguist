@@ -118,14 +118,13 @@
      nlp
      sentences
      dependency-graph)
-;=>
-;(#object[edu.stanford.nlp.semgraph.SemanticGraph
-;         0x128ed8d
-;         "-> 来/VV (root)
-;            -> 先生/NN (nmod:topic)
-;            -> ，/PU (punct)
-;            -> 你/PN (nsubj)
-;            -> 哪儿/PN (nmod:prep)
-;              -> 从/P (case)
-;            -> ？/PU (punct)
-;          "])
+;=> (#object[edu.stanford.nlp.semgraph.SemanticGraph])
+;            0x128ed8d
+;            "-> 来/VV (root)
+;               -> 先生/NN (nmod:topic)
+;               -> ，/PU (punct)
+;               -> 你/PN (nsubj)
+;               -> 哪儿/PN (nmod:prep)
+;                 -> 从/P (case)
+;               -> ？/PU (punct)
+;             "])
