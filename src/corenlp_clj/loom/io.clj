@@ -1,4 +1,4 @@
-(ns corenlp-clj.io
+(ns corenlp-clj.loom.io
   (:require [corenlp-clj.semgraph :refer [dot-format]]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]))
