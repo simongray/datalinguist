@@ -21,8 +21,8 @@
 ;;;;     * toDotFormat: could make better use of formatting
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 ;;;;
-;;;; Properties of TypedDependency that were left unimplemented:
-;;;;     * everything! it seems mostly just for internal use
+;;;; Properties of TypedDependency and GrammaticalRelation that were left unimplemented:
+;;;;     * everything! they seem mostly just for internal use
 
 (extend-type SemanticGraphEdge
   Edge
