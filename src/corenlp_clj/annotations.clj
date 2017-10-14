@@ -21,16 +21,16 @@
 ;;;; This namespace contains convenience functions for accessing the most common annotations of Stanford CoreNLP.
 ;;;; The functions are designed to be chained using the ->> macro or through function composition.
 ;;;; Please note that *any* annotation can be accessed using corenlp-clj.annotations/annotation,
-;;;; you are not just limited to using the annotations of the convenience functions provided in this namespace.
-
-;;;; This namespace mirrors the annotation system of Stanford CoreNLP: once your returned object is not a TypesafeMap
-;;;; or a seq of TypesafeMap objects, then that is a cue that you will need functions from another namespace.
+;;;; you are not just limited to using the convenience functions provided in this namespace.
+;;;;
+;;;; The functions here mirror the annotation system of Stanford CoreNLP: once the returned object is not a TypesafeMap
+;;;; or a seq of TypesafeMap objects, annotation functions cannot retrieve anything from it.
 ;;;; An example of this might be the dependency-graph annotation which returns a SemanticGraph object.
 ;;;; However, using a function such as corenlp-clj.semgraph/nodes on a SemanticGraph object returns IndexedWord objects
 ;;;; which *are* implementations of TypesafeMap. Consequently, the annotation functions can take them as params.
-
-;;;; As a rule, all functions in this namespace that are pluralised have a seqable output, e.g. sentences or tokens.
-;;;; This does not matter when chaining these functions, as all annotation functions implicitly map to seqable input.
+;;;;
+;;;; As a general rule, functions with names that are pluralised have a seqable output, e.g. sentences or tokens.
+;;;; This does not matter when chaining these functions, as all annotation functions will also implicitly map to seqs.
 
 (defn annotation
   "Access the annotation of x as specified by class."
@@ -39,7 +39,7 @@
     (map #(annotation class %) x) ; no tail recursion!
     (.get ^TypesafeMap x class)))
 
-(def text (partial annotation CoreAnnotations$TextAnnotation))
+(def text(partial annotation CoreAnnotations$TextAnnotation))
 (def lemma (partial annotation CoreAnnotations$LemmaAnnotation))
 (def pos (partial annotation CoreAnnotations$PartOfSpeechAnnotation))
 (def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
