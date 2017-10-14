@@ -3,7 +3,7 @@
            [edu.stanford.nlp.pipeline StanfordCoreNLP]))
 
 (defn- properties
-  "Convenience function for making a Properties object based on a Clojure map m."
+  "Make a Properties object based on a map m."
   [m]
   (let [props (Properties.)]
     (.putAll props m)
@@ -11,15 +11,16 @@
 
 (defn prerequisites
   "Find the prerequisities for the specified pipeline setup or a single annotator."
-  ([xs m]
-   (StanfordCoreNLP/ensurePrerequisiteAnnotators (into-array xs) (properties m)))
+  ([xs opts]
+   (StanfordCoreNLP/ensurePrerequisiteAnnotators (into-array xs) (properties opts)))
   ([x]
    (if (string? x)
      (prerequisites [x] {})
      (prerequisites x {}))))
 
 (defn pipeline
-  "Wraps a closure around a custom CoreNLP pipeline as specified in m."
-  [m]
-  (let [stanford-core-nlp (StanfordCoreNLP. ^Properties (properties m))]
+  "Wrap a closure around a custom CoreNLP pipeline as specified in opts.
+  The returned function will annotate text as per the specifications."
+  [opts]
+  (let [stanford-core-nlp (StanfordCoreNLP. ^Properties (properties opts))]
     (fn [^String s] (.process stanford-core-nlp s))))
