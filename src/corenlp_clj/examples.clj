@@ -114,17 +114,22 @@
 ;=> ("妈妈" "骂" "马" "吗" "？" "我" "不" "清楚" "，" "你" "问问" "她" "。")
 
 ;; Chinese is also a supported language for grammatical dependencies
-(->> "先生，你从哪儿来？"
+(->> "有一次他大胆提出了自己的看法。"
      nlp
      sentences
+     first
      dependency-graph)
-;=> (#object[edu.stanford.nlp.semgraph.SemanticGraph])
-;            0x128ed8d
-;            "-> 来/VV (root)
-;               -> 先生/NN (nmod:topic)
-;               -> ，/PU (punct)
-;               -> 你/PN (nsubj)
-;               -> 哪儿/PN (nmod:prep)
-;                 -> 从/P (case)
-;               -> ？/PU (punct)
-;             "])
+;=> #object[edu.stanford.nlp.semgraph.SemanticGraph
+;           0x36678fe4
+;           "-> 提出/VV (root)
+;              -> 有/VE (conj)
+;                -> 一/CD (dep)
+;                  -> 次/M (mark:clf)
+;              -> 他/PN (nsubj)
+;              -> 大胆/AD (advmod)
+;              -> 了/AS (aux:asp)
+;              -> 看法/NN (dobj)
+;                -> 自己/PN (nmod:assmod)
+;                  -> 的/DEG (case)
+;              -> 。/PU (punct)
+;            "]
