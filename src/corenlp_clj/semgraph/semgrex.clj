@@ -2,8 +2,8 @@
   (:import [edu.stanford.nlp.semgraph.semgrex SemgrexPattern SemgrexMatcher]
            [edu.stanford.nlp.semgraph SemanticGraph]))
 
-;;;; This namespace contains implements of functions relating to semgrex in Stanford CoreNLP.
-;;;; Functions starting with "sgx-" mimic standard Clojure regex function names and their functionality.
+;;;; This namespace contains implementations of functions relating to semgrex in Stanford CoreNLP.
+;;;; sgx-pattern, sgx-matcher, sgx-find, and sgx-seq mimic standard Clojure regex functions.
 ;;;; Matches are of type IndexedWord. Underlying data can be obtained using the functions in corenlp-clj.annotations.
 
 (defn sgx-pattern
@@ -29,3 +29,27 @@
       (if (.findNextMatchingNode m)
         (recur (conj matches (.getMatch m)))
         matches))))
+
+(defn sgx-node-names
+  "Returns list of matching labeled node names after latest call to sgx-find."
+  [^SemgrexMatcher m]
+  (.getNodeNames m))
+
+(defn sgx-relation-names
+  "Returns list of matching labeled relation names after latest call to sgx-find."
+  [^SemgrexMatcher m]
+  (.getRelationNames m))
+
+(defn sgx-nodes
+  "Returns a map of matching node names to nodes after latest call to sgx-find."
+  [^SemgrexMatcher m]
+  (into {} (map
+             #(vector (keyword %) (.getNode m %))
+             (sgx-node-names m))))
+
+(defn sgx-relations
+  "Returns a map of matching relation names to relations after latest call to sgx-find."
+  [^SemgrexMatcher m]
+  (into {} (map
+             #(vector (keyword %) (.getRelnString m %))
+             (sgx-relation-names m))))
