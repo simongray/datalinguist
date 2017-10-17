@@ -2,7 +2,9 @@
   (:import [edu.stanford.nlp.semgraph.semgrex SemgrexPattern SemgrexMatcher]
            [edu.stanford.nlp.semgraph SemanticGraph]))
 
-;;;; Matches are of type IndexedWord whose information can be obtained via the basic annotation functions.
+;;;; This namespace contains implements of functions relating to semgrex in Stanford CoreNLP.
+;;;; Functions starting with "sgx-" mimic standard Clojure regex function names and their functionality.
+;;;; Matches are of type IndexedWord. Underlying data can be obtained using the functions in corenlp-clj.annotations.
 
 (defn sgx-pattern
   "Returns an instance of SemgrexPattern, for use, e.g. in sg-matcher."
