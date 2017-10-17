@@ -49,7 +49,7 @@
     (TypedDependency. (.reln td) (.dep td) (.gov td))))
 
 ;; Note: unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors.
-;; Loom functionality that depend on these implicit constraints is still unavailable.
+;; Loom functionality that depends on these implicit constraints is still unavailable.
 (extend-type SemanticGraph
   Graph
     (nodes [g] (.vertexSet g))
