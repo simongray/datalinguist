@@ -3,7 +3,10 @@
            [edu.stanford.nlp.semgraph SemanticGraph]))
 
 ;;;; This namespace contains implementations of functions relating to semgrex in Stanford CoreNLP.
-;;;; se-pattern, se-matcher, se-find, and se-seq mimic standard Clojure regex functions.
+;;;;
+;;;; Se-pattern, se-matcher, se-find, and se-seq mimic standard Clojure regex functions.
+;;;; The other functions prepended with "se-" deal with extracting named nodes and relations from matches.
+;;;;
 ;;;; Matches are of type IndexedWord. Underlying data can be obtained using the functions in corenlp-clj.annotations.
 
 (defn se-pattern
@@ -24,7 +27,7 @@
 (defn se-seq
   "Returns a list of all unique matches of SemgrexPattern in SemanticGraph (note: not lazy)."
   [^SemgrexPattern p ^SemanticGraph g]
-  (let [m (se-matcher p g)]
+  (let [^SemgrexMatcher m (se-matcher p g)]
     (loop [matches ()]
       (if (.findNextMatchingNode m)
         (recur (conj matches (.getMatch m)))
@@ -51,3 +54,18 @@
   [^SemgrexMatcher m]
   (into {} (map #(vector (keyword %) (.getRelnString m %))
                 (se-relation-names m))))
+
+(defn se-find-full
+  "Returns a vector of the next semgrex match, matching named nodes, and matching named relations, if any."
+  [^SemgrexMatcher m]
+  (when-let [match (se-find m)]
+    [match (se-nodes m) (se-relations m)]))
+
+(defn se-seq-full
+  "Returns vectors of semgrex match, matching named nodes, and matching named relations for all matches."
+  [^SemgrexPattern p ^SemanticGraph g]
+  (let [^SemgrexMatcher m (se-matcher p g)]
+    (loop [matches ()]
+      (if (.findNextMatchingNode m)
+        (recur (conj matches [(.getMatch m) (se-nodes m) (se-relations m)]))
+        matches))))
