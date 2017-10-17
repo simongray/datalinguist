@@ -43,13 +43,11 @@
 (defn sgx-nodes
   "Returns a map of matching node names to nodes after latest call to sgx-find."
   [^SemgrexMatcher m]
-  (into {} (map
-             #(vector (keyword %) (.getNode m %))
-             (sgx-node-names m))))
+  (into {} (map #(vector (keyword %) (.getNode m %))
+                (sgx-node-names m))))
 
 (defn sgx-relations
   "Returns a map of matching relation names to relations after latest call to sgx-find."
   [^SemgrexMatcher m]
-  (into {} (map
-             #(vector (keyword %) (.getRelnString m %))
-             (sgx-relation-names m))))
+  (into {} (map #(vector (keyword %) (.getRelnString m %))
+                (sgx-relation-names m))))
