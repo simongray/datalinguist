@@ -98,6 +98,11 @@
   [^SemanticGraph g ^IndexedWord node]
   (.getSiblings g node))
 
+(defn path-to-root
+  "Find the path from the given node to the root."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getPathToRoot g node))
+
 (defn parse
   "Create a SemanticGraph from a string using the compact string format.
    Example: [ate subj>Bill dobj>[muffins compound>blueberry]]"
