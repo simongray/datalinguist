@@ -128,7 +128,9 @@
    :word-index CoreLabel$OutputFormat/WORD_INDEX})
 
 (defn formatted-string
-  "Format according to style or SemanticGraphFormatter; otherwise uses default formatting."
+  "Format according to style; otherwise uses default formatting.
+  Style can be a SemanticGraphFormatter or one of :xml, :list,
+  :readable, :recursive, :pos, :compact, :compact-pos, or :dot."
   ([^SemanticGraph g]
    (.toFormattedString g))
   ([style ^SemanticGraph g & {:keys [graph-name label-format]
