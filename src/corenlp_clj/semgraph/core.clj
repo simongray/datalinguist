@@ -93,6 +93,11 @@
   (let [^Pair pair (.yieldSpan g node)]
     [(.first pair) (.second pair)]))
 
+(defn siblings
+  "Returns the other children of the node's parent."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getSiblings g node))
+
 (defn parse
   "Create a SemanticGraph from a string using the compact string format.
    Example: [ate subj>Bill dobj>[muffins compound>blueberry]]"
