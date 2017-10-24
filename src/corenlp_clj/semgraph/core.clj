@@ -75,7 +75,7 @@
   [^SemanticGraph g]
   (.toDotFormat g))
 
-(defn dag?
+(defn acyclic?
   "True if the graph (or subgraph at w) contains no cycles."
   ([^SemanticGraph g]
    (.isDag g))
