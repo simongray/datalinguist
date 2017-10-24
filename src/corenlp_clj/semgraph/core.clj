@@ -22,11 +22,13 @@
 ;;;;     * obvious cruft:
 ;;;;         - matchPatternToVertex
 ;;;;         - variations on basic graph functionality, e.g. getChildList
+;;;;         - isNegatedVerb, isNegatedVertex, isInConditionalContext, etc
+;;;;         - getSubgraphVertices is equal in functionality to descendants
 ;;;;     * useless utility functions, easily replicated:
 ;;;;         - toRecoveredSentenceString and the like
 ;;;;         - empty, size
 ;;;;         - sorting methods; just use Clojure sort, e.g. (sort (nodes g))
-;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
+;;;;         - descendants; use loom, e.g. (loom.alg/pre-traverse g node)
 ;;;;
 ;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
 ;;;;     * everything! they seem mostly just for internal use
