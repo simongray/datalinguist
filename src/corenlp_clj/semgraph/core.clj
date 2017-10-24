@@ -41,7 +41,7 @@
   (src [edge] (.getSource edge))
   (dest [edge] (.getTarget edge)))
 
-(defn reln
+(defn relation
   "The grammatical relation labeling an edge in a dependency graph.
   Style can be :long or :short; defaults to :short."
   ([style ^SemanticGraphEdge edge]
@@ -49,7 +49,7 @@
      :long (.getLongName (.getRelation edge))
      :short (.getShortName (.getRelation edge))))
   ([^SemanticGraphEdge edge]
-   (reln :short edge)))
+   (relation :short edge)))
 
 (defn- flip
   "Returns a TypedDependency with governor and dependent flipped."
