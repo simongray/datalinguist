@@ -80,17 +80,17 @@
   (.getFirstRoot g))
 
 (defn acyclic?
-  "True if the graph (or subgraph at w) contains no cycles."
+  "True if the graph (or subgraph at node) contains no cycles."
   ([^SemanticGraph g]
    (.isDag g))
-  ([^SemanticGraph g ^IndexedWord w]
-   (.isDag g w)))
+  ([^SemanticGraph g ^IndexedWord node]
+   (.isDag g node)))
 
 (defn span
   "The span of the subtree yield of this node represented as a pair of integers.
   The span is zero indexed. The begin is inclusive and the end is exclusive."
-  [^SemanticGraph g ^IndexedWord w]
-  (let [^Pair pair (.yieldSpan g w)]
+  [^SemanticGraph g ^IndexedWord node]
+  (let [^Pair pair (.yieldSpan g node)]
     [(.first pair) (.second pair)]))
 
 (defn parse
