@@ -74,3 +74,10 @@
   "The GraphViz dot-format of a dependency graph (SemanticGraph)."
   [^SemanticGraph g]
   (.toDotFormat g))
+
+(defn dag?
+  "True if the graph (or subgraph at w) contains no cycles."
+  ([^SemanticGraph g]
+   (.isDag g))
+  ([^SemanticGraph g ^IndexedWord w
+    (.isDag g w)]))
