@@ -20,11 +20,14 @@
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
 ;;;;     * sorting methods - just use Clojure sort, e.g. (sort (nodes g))
+;;;;     * toRecoveredSentenceString and the like - useless utility functions, easily replicated
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 ;;;;
 ;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
 ;;;;     * everything! they seem mostly just for internal use
 ;;;;     * IndexedWord is simply a wrapper class for CoreLabel
+;;;;
+;;;; TODO: implement useful parts of SemanticGraphUtils
 
 (extend-type SemanticGraphEdge
   Edge
