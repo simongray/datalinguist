@@ -19,6 +19,7 @@
 ;;;;     * extra: it's only used internally in some Util function
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
+;;;;     * functionality provided by the graph functions in loom
 ;;;;     * obvious cruft:
 ;;;;         - matchPatternToVertex
 ;;;;         - variations on basic graph functionality, e.g. getChildList
