@@ -1,5 +1,5 @@
 (ns corenlp-clj.loom.io
-  (:require [corenlp-clj.semgraph :refer [dot-format]]
+  (:require [corenlp-clj.semgraph.core :refer [dot-format]]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]))
 
