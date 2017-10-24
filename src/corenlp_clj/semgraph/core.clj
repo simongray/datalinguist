@@ -79,5 +79,5 @@
   "True if the graph (or subgraph at w) contains no cycles."
   ([^SemanticGraph g]
    (.isDag g))
-  ([^SemanticGraph g ^IndexedWord w
-    (.isDag g w)]))
+  ([^SemanticGraph g ^IndexedWord w]
+   (.isDag g w)))
