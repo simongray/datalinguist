@@ -4,6 +4,7 @@
   (:import [edu.stanford.nlp.semgraph SemanticGraph SemanticGraphEdge]
            [edu.stanford.nlp.trees TypedDependency GrammaticalRelation]
            [edu.stanford.nlp.ling IndexedWord]
+           [edu.stanford.nlp.util Pair]
            [java.util Collection]))
 
 ;;;; This namespace contains functions relevant for dependency grammar:
@@ -18,10 +19,11 @@
 ;;;;     * extra: it's only used internally in some Util function
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
+;;;;     * sorting methods - just use Clojure sort, e.g. (sort (nodes g))
 ;;;;     * toDotFormat: could make better use of formatting functionality
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 ;;;;
-;;;; Properties of IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
+;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
 ;;;;     * everything! they seem mostly just for internal use
 ;;;;     * IndexedWord is simply a wrapper class for CoreLabel
 
@@ -81,3 +83,10 @@
    (.isDag g))
   ([^SemanticGraph g ^IndexedWord w]
    (.isDag g w)))
+
+(defn span
+  "The span of the subtree yield of this node represented as a pair of integers.
+  The span is zero indexed. The begin is inclusive and the end is exclusive."
+  [^SemanticGraph g ^IndexedWord w]
+  (let [^Pair pair (.yieldSpan g w)]
+    [(.first pair) (.second pair)]))
