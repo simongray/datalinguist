@@ -1,9 +1,9 @@
 (ns corenlp-clj.semgraph.core
   (:require [loom.graph :refer [Graph Digraph Edge]]
             [loom.attr :refer [AttrGraph]])
-  (:import [edu.stanford.nlp.semgraph SemanticGraph SemanticGraphEdge]
+  (:import [edu.stanford.nlp.semgraph SemanticGraph SemanticGraphEdge SemanticGraph$OutputFormat SemanticGraphFormatter]
            [edu.stanford.nlp.trees TypedDependency GrammaticalRelation]
-           [edu.stanford.nlp.ling IndexedWord]
+           [edu.stanford.nlp.ling IndexedWord CoreLabel$OutputFormat]
            [edu.stanford.nlp.util Pair]
            [java.util Collection]))
 
@@ -20,7 +20,6 @@
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
 ;;;;     * sorting methods - just use Clojure sort, e.g. (sort (nodes g))
-;;;;     * toDotFormat: could make better use of formatting functionality
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 ;;;;
 ;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
@@ -72,11 +71,6 @@
   [^SemanticGraph g]
   (.getFirstRoot g))
 
-(defn dot-format
-  "The GraphViz dot-format of a dependency graph (SemanticGraph)."
-  [^SemanticGraph g]
-  (.toDotFormat g))
-
 (defn acyclic?
   "True if the graph (or subgraph at w) contains no cycles."
   ([^SemanticGraph g]
@@ -96,3 +90,39 @@
    Example: [ate subj>Bill dobj>[muffins compound>blueberry]]"
   [^String s]
   (SemanticGraph/valueOf s))
+
+;; From the CoreLabel class - may move somewhere else in the future.
+;; As per the messy conventions of Stanford CoreNLP, word = value.
+(def corelabel-formats
+  {:all CoreLabel$OutputFormat/ALL
+   :lemma-index CoreLabel$OutputFormat/LEMMA_INDEX
+   :map CoreLabel$OutputFormat/MAP
+   :value CoreLabel$OutputFormat/VALUE
+   :value-index CoreLabel$OutputFormat/VALUE_INDEX
+   :value-index-map CoreLabel$OutputFormat/VALUE_INDEX_MAP
+   :value-map CoreLabel$OutputFormat/VALUE_MAP
+   :value-tag CoreLabel$OutputFormat/VALUE_TAG
+   :value-tag-index CoreLabel$OutputFormat/VALUE_TAG_INDEX
+   :value-tag-ner CoreLabel$OutputFormat/VALUE_TAG_NER
+   :word CoreLabel$OutputFormat/WORD
+   :word-index CoreLabel$OutputFormat/WORD_INDEX})
+
+(defn formatted-string
+  "Format according to style or SemanticGraphFormatter; otherwise uses default formatting."
+  ([^SemanticGraph g]
+   (.toFormattedString g))
+  ([style ^SemanticGraph g & {:keys [graph-name label-format]
+                              :or {graph-name ""
+                                   label-format :value-tag-index}}]
+   (if (keyword? style)
+     (case style
+       :xml (.toString g SemanticGraph$OutputFormat/XML)
+       :list (.toString g SemanticGraph$OutputFormat/LIST)
+       :readable (.toString g SemanticGraph$OutputFormat/READABLE)
+       :recursive (.toString g SemanticGraph$OutputFormat/RECURSIVE)
+       :pos (.toPOSList g)
+       :compact (.toCompactString g)
+       :compact-pos (.toCompactString g true)
+       :dot (.toDotFormat g graph-name (corelabel-formats label-format))
+       :default (.toFormattedString g))
+     (.toFormattedString g ^SemanticGraphFormatter style))))

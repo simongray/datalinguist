@@ -1,5 +1,5 @@
 (ns corenlp-clj.loom.io
-  (:require [corenlp-clj.semgraph.core :refer [dot-format]]
+  (:require [corenlp-clj.semgraph.core :as semgraph]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]))
 
@@ -57,7 +57,7 @@
   the shell's path. Possible algorithms include :dot, :neato, :fdp, :sfdp,
   :twopi, and :circo. Possible formats include :png, :ps, :pdf, and :svg."
   [g & {:keys [alg fmt] :or {alg "dot" fmt :png} :as opts}]
-  (let [dot-graph (dot-format g)
+  (let [dot-graph (semgraph/formatted-string :dot g)
         cmd (sh (name alg) (str "-T" (name fmt)) :in dot-graph :out-enc :bytes)]
     (:out cmd)))
 
