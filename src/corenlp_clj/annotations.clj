@@ -47,42 +47,38 @@
 (def tokens (partial annotation CoreAnnotations$TokensAnnotation))
 
 (defn offset
-  "Defaults to beginning character offset."
-  ([category x]
-   (cond
-     (= category :begin) (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
-     (= category :end) (annotation CoreAnnotations$CharacterOffsetEndAnnotation x)
-     :else (throw (IllegalArgumentException. "category must be :begin or :end"))))
+  "The character offset of x. Style can be :begin (default) or :end."
+  ([style x]
+   (case style
+     :begin (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
+     :end (annotation CoreAnnotations$CharacterOffsetEndAnnotation x)))
   ([x]
    (offset :begin x)))
 
 (defn index
-  "Defaults to token index."
-  ([category x]
-   (cond
-     (= category :token) (annotation CoreAnnotations$IndexAnnotation x)
-     (= category :sentence) (annotation CoreAnnotations$SentenceIndexAnnotation x)
-     :else (throw (IllegalArgumentException. "category must be :token or :sentence"))))
+  "The index of x. Style can be :token (default) or :sentence."
+  ([style x]
+   (case style
+     :token (annotation CoreAnnotations$IndexAnnotation x)
+     :sentence (annotation CoreAnnotations$SentenceIndexAnnotation x)))
   ([x]
    (index :token x)))
 
 (defn whitespace
-  "Defaults to whitespace before."
-  ([category x]
-   (cond
-     (= category :before) (annotation CoreAnnotations$BeforeAnnotation x)
-     (= category :after) (annotation CoreAnnotations$AfterAnnotation x)
-     :else (throw (IllegalArgumentException. "category must be :before or :after"))))
+  "The whitespace around x. Style can be :before (default) or :after."
+  ([style x]
+   (case style
+     :before (annotation CoreAnnotations$BeforeAnnotation x)
+     :after (annotation CoreAnnotations$AfterAnnotation x)))
   ([x]
    (whitespace :before x)))
 
 (defn dependency-graph
-  "Defaults to enhanced++ dependencies."
-  ([category x]
-   (cond
-     (= category :basic) (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
-     (= category :enhanced) (annotation SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation x)
-     (= category :enhanced++) (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)
-     :else (throw (IllegalArgumentException. "category must be :basic, :enhanced or :enhanced++"))))
+  "The dependency graph of x. Style can be :basic, :enhanced or :enhanced++ (default)."
+  ([style x]
+   (case style
+     :basic (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
+     :enhanced (annotation SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation x)
+     :enhanced++ (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)))
   ([x]
    (dependency-graph :enhanced++ x)))
