@@ -44,12 +44,11 @@
 (defn reln
   "The grammatical relation labeling an edge in a dependency graph."
   ([long-or-short ^SemanticGraphEdge edge]
-   (cond
-     (= :long long-or-short) (.getLongName (.getRelation edge))
-     (= :short long-or-short) (.getShortName (.getRelation edge))
-     :else (throw (IllegalArgumentException. "long-or-short must be :long or :short"))))
+   (case long-or-short
+     :long (.getLongName (.getRelation edge))
+     :short (.getShortName (.getRelation edge))))
   ([^SemanticGraphEdge edge]
-   (reln :long edge)))
+   (reln :short edge)))
 
 (defn- flip
   "Returns a TypedDependency with governor and dependent flipped."
