@@ -19,8 +19,13 @@
 ;;;;     * extra: it's only used internally in some Util function
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
-;;;;     * sorting methods - just use Clojure sort, e.g. (sort (nodes g))
-;;;;     * toRecoveredSentenceString and the like - useless utility functions, easily replicated
+;;;;     * obvious cruft:
+;;;;         - matchPatternToVertex
+;;;;         - variations on basic graph functionality, e.g. getChildList
+;;;;     * useless utility functions, easily replicated:
+;;;;         - toRecoveredSentenceString and the like
+;;;;         - empty, size
+;;;;         - sorting methods; just use Clojure sort, e.g. (sort (nodes g))
 ;;;;     * a lot! some of it is cruft, but will need to determine on a case by case basis
 ;;;;
 ;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
