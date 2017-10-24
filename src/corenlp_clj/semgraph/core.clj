@@ -50,7 +50,7 @@
     (TypedDependency. (.reln td) (.dep td) (.gov td))))
 
 ;; Note: unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors.
-;; Loom functionality that depends on these implicit constraints is still unavailable.
+;; Loom functionality that depends on these implicit constraints require conversion using loom-digraph.
 (extend-type SemanticGraph
   Graph
     (nodes [g] (.vertexSet g))
@@ -126,3 +126,10 @@
        :dot (.toDotFormat g graph-name (corelabel-formats label-format))
        :default (.toFormattedString g))
      (.toFormattedString g ^SemanticGraphFormatter style))))
+
+(defn loom-digraph
+  "Converts a SemanticGraph into a loom Digraph; necessary for certain loom functionality."
+  [^SemanticGraph g]
+  (let [node-set (loom.graph/nodes g)
+        get-children #(list % (loom.graph/successors* g %))]
+    (loom.graph/digraph (apply hash-map (mapcat get-children node-set)))))
