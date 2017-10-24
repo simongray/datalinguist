@@ -42,9 +42,10 @@
   (dest [edge] (.getTarget edge)))
 
 (defn reln
-  "The grammatical relation labeling an edge in a dependency graph."
-  ([long-or-short ^SemanticGraphEdge edge]
-   (case long-or-short
+  "The grammatical relation labeling an edge in a dependency graph.
+  Style can be :long or :short; defaults to :short."
+  ([style ^SemanticGraphEdge edge]
+   (case style
      :long (.getLongName (.getRelation edge))
      :short (.getShortName (.getRelation edge))))
   ([^SemanticGraphEdge edge]
