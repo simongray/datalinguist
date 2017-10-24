@@ -90,3 +90,9 @@
   [^SemanticGraph g ^IndexedWord w]
   (let [^Pair pair (.yieldSpan g w)]
     [(.first pair) (.second pair)]))
+
+(defn parse
+  "Create a SemanticGraph from a string using the compact string format.
+   Example: [ate subj>Bill dobj>[muffins compound>blueberry]]"
+  [^String s]
+  (SemanticGraph/valueOf s))
