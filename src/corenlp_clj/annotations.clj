@@ -1,5 +1,6 @@
 (ns corenlp-clj.annotations
   (:import [edu.stanford.nlp.pipeline]
+           [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
                                   CoreAnnotations$LemmaAnnotation
                                   CoreAnnotations$PartOfSpeechAnnotation
@@ -13,7 +14,6 @@
                                   CoreAnnotations$SentenceIndexAnnotation
                                   CoreAnnotations$CharacterOffsetBeginAnnotation
                                   CoreAnnotations$CharacterOffsetEndAnnotation]
-           [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
@@ -33,21 +33,34 @@
 ;;;; This does not matter when chaining these functions, as all annotation functions will also implicitly map to seqs.
 
 (defn annotation
-  "Access the annotation of x as specified by class."
+  "Access the annotation of x as specified by class.
+  x may also be a seq of objects carrying annotations."
   [^Class class x]
   (if (seqable? x)
-    (map #(annotation class %) x) ; no tail recursion!
+    (map (partial annotation class) x)
     (.get ^TypesafeMap x class)))
 
-(def text(partial annotation CoreAnnotations$TextAnnotation))
-(def lemma (partial annotation CoreAnnotations$LemmaAnnotation))
-(def pos (partial annotation CoreAnnotations$PartOfSpeechAnnotation))
-(def ner (partial annotation CoreAnnotations$NamedEntityTagAnnotation))
-(def sentences (partial annotation CoreAnnotations$SentencesAnnotation))
-(def tokens (partial annotation CoreAnnotations$TokensAnnotation))
+(defn text "The text of x (TextAnnotation)." [x]
+  (annotation CoreAnnotations$TextAnnotation x))
+
+(defn lemma "The lemma of x (LemmaAnnotation)." [x]
+  (annotation CoreAnnotations$LemmaAnnotation x))
+
+(defn pos "The part-of-speech of x (PartOfSpeechAnnotation)." [x]
+  (annotation CoreAnnotations$PartOfSpeechAnnotation x))
+
+(defn ner "The named entity tag of x (NamedEntityTagAnnotation)." [x]
+  (annotation CoreAnnotations$NamedEntityTagAnnotation x))
+
+(defn sentences "The sentences of x (SentencesAnnotation)." [x]
+  (annotation CoreAnnotations$SentencesAnnotation x))
+
+(defn tokens "The tokens of x (TokensAnnotation)." [x]
+  (annotation CoreAnnotations$TokensAnnotation x))
 
 (defn offset
-  "The character offset of x. Style can be :begin (default) or :end."
+  "The character offset of x (CharacterOffsetBeginAnnotation -or- CharacterOffsetEndAnnotation).
+  Style can be :begin (default) or :end."
   ([style x]
    (case style
      :begin (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
@@ -56,7 +69,8 @@
    (offset :begin x)))
 
 (defn index
-  "The index of x. Style can be :token (default) or :sentence."
+  "The index of x (IndexAnnotation -or- SentenceIndexAnnotation).
+  Style can be :token (default) or :sentence."
   ([style x]
    (case style
      :token (annotation CoreAnnotations$IndexAnnotation x)
@@ -65,7 +79,8 @@
    (index :token x)))
 
 (defn whitespace
-  "The whitespace around x. Style can be :before (default) or :after."
+  "The whitespace around x (BeforeAnnotation -or- AfterAnnotation).
+  Style can be :before (default) or :after."
   ([style x]
    (case style
      :before (annotation CoreAnnotations$BeforeAnnotation x)
@@ -74,7 +89,9 @@
    (whitespace :before x)))
 
 (defn dependency-graph
-  "The dependency graph of x. Style can be :basic, :enhanced or :enhanced++ (default)."
+  "The dependency graph of x (BasicDependenciesAnnotation -or-
+  EnhancedDependenciesAnnotation -or- EnhancedPlusPlusDependenciesAnnotation).
+  Style can be :basic, :enhanced or :enhanced++ (default)."
   ([style x]
    (case style
      :basic (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
