@@ -45,7 +45,7 @@
 
 (defn relation
   "The grammatical relation labeling an edge in a dependency graph.
-  Style can be :long or :short; defaults to :short."
+  Style can be :long or :short (default)."
   ([style ^SemanticGraphEdge edge]
    (case style
      :long (.getLongName (.getRelation edge))
