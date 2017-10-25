@@ -13,9 +13,9 @@
 ;;;; Properties of SemanticGraphEdge that were left unimplemented:
 ;;;;     * weight: seems like it isn't used at all
 ;;;;     * extra: it's only used internally in some Util function
+;;;;     * duplicated functions, e.g. only governor implemented, not source
 ;;;;
 ;;;; Properties of SemanticGraph that were left unimplemented:
-;;;;     * functionality provided by the graph functions in loom
 ;;;;     * obvious cruft:
 ;;;;         - matchPatternToVertex
 ;;;;         - variations on basic graph functionality, e.g. getChildList
