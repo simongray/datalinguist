@@ -7,12 +7,8 @@
            [edu.stanford.nlp.util Pair]
            [java.util Collection]))
 
-;;;; This namespace contains functions relevant for dependency grammar:
-;;;;     * graphs (SemanticGraph)
-;;;;     * nodes (IndexedWord)
-;;;;     * edges (SemanticGraphEdge)
-;;;;
-;;;; Mutating functions have deliberately not been implemented.
+;;;; This namespace contains functions relevant for dependency grammar.
+;;;; Mutating functions have deliberately not been re-implemented.
 ;;;;
 ;;;; Properties of SemanticGraphEdge that were left unimplemented:
 ;;;;     * weight: seems like it isn't used at all
@@ -28,8 +24,8 @@
 ;;;;     * useless utility functions, easily replicated:
 ;;;;         - toRecoveredSentenceString and the like
 ;;;;         - empty, size
-;;;;         - sorting methods; just use Clojure sort, e.g. (sort (nodes g))
-;;;;         - descendants; use loom, e.g. (loom.alg/pre-traverse g node)
+;;;;         - sorting methods; just use Clojure sort, e.g. (sort (vertices g))
+;;;;         - descendants; use loom, e.g. (loom.alg/pre-traverse g vertex)
 ;;;;
 ;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
 ;;;;     * everything! they seem mostly just for internal use
@@ -37,10 +33,15 @@
 ;;;;
 ;;;; TODO: implement useful parts of SemanticGraphUtils
 
-(extend-type SemanticGraphEdge
-  Edge
-  (src [edge] (.getSource edge))
-  (dest [edge] (.getTarget edge)))
+(defn governor
+  "The governor (= source) of the relation represented by edge."
+  [^SemanticGraphEdge edge]
+  (.getSource edge))
+
+(defn dependent
+  "The dependent (= target) of the relation represented by edge."
+  [^SemanticGraphEdge edge]
+  (.getTarget edge))
 
 (defn relation
   "The grammatical relation labeling an edge in a dependency graph.
@@ -52,62 +53,89 @@
   ([^SemanticGraphEdge edge]
    (relation :short edge)))
 
-(defn- flip
-  "Returns a TypedDependency with governor and dependent flipped."
-  [^TypedDependency td]
-  ;; ROOT isn't a real node, it is just used to mark the root node
-  (if (= (.reln td) (GrammaticalRelation/ROOT))
-    (TypedDependency. (.reln td) (.gov td) (.dep td))
-    (TypedDependency. (.reln td) (.dep td) (.gov td))))
+(defn vertices
+  "The vertices of dependency graph g."
+  [^SemanticGraph g]
+  (.vertexSet g))
 
-;; Note: unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors.
-;; Loom functionality that depends on these implicit constraints require conversion using loom-digraph.
-(extend-type SemanticGraph
-  Graph
-    (nodes [g] (.vertexSet g))
-    (edges [g] (seq (.edgeIterable g)))
-    (has-node? [g node] (contains? (.vertexSet g) node))
-    (has-edge? [g n1 n2] (or (.containsEdge g n1 n2) (.containsEdge g n2 n1)))
-    (successors* [g node] (.getChildren g node))
-    (out-degree [g node] (.outDegree g node))
-    (out-edges [g node] (.outgoingEdgeList g node))
-  Digraph
-    (predecessors* [g node] (.getParents g node))
-    (in-degree [g node] (.inDegree g node))
-    (in-edges [g node] (.incomingEdgeList g node))
-    (transpose [g] (SemanticGraph. ^Collection (map flip (.typedDependencies g)))))
+(defn edges
+  "The edges of dependency graph g."
+  [^SemanticGraph g]
+  (seq (.edgeIterable g)))
+
+(defn contains-vertex?
+  "True if dependency graph g contains vertex."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.containsVertex g vertex))
+
+(defn contains-edge?
+  "True if dependency graph g contains edge."
+  ([^SemanticGraph g ^IndexedWord governor ^IndexedWord dependent]
+   (.containsEdge g governor dependent))
+  ([^SemanticGraph g ^SemanticGraphEdge edge]
+   (.containsEdge g edge)))
+
+(defn children
+  "The children of vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.getChildren g vertex))
+
+(defn parents
+  "The parents of vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.getParents g vertex))
+
+(defn siblings
+  "The siblings of the vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.getSiblings g vertex))
+
+(defn out-degree
+  "The number of outgoing edges of vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.outDegree g vertex))
+
+(defn in-degree
+  "The number of incoming edges of vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.inDegree g vertex))
+
+(defn outgoing-edges
+  "The outgoing edges of vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.outgoingEdgeList g vertex))
+
+(defn incoming-edges
+  "The incoming edges of vertex in dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.incomingEdgeList g vertex))
 
 (defn root
-  "The root node of a dependency graph (SemanticGraph)."
+  "The root vertex of a dependency dependency graph."
   [^SemanticGraph g]
   (.getFirstRoot g))
 
 (defn acyclic?
-  "True if the graph (or subgraph at node) contains no cycles."
+  "True if the dependency graph (or subgraph at vertex) contains no cycles."
   ([^SemanticGraph g]
    (.isDag g))
-  ([^SemanticGraph g ^IndexedWord node]
-   (.isDag g node)))
+  ([^SemanticGraph g ^IndexedWord vertex]
+   (.isDag g vertex)))
 
 (defn span
-  "The span of the subtree yield of this node represented as a pair of integers.
-  The span is zero indexed. The begin is inclusive and the end is exclusive."
-  [^SemanticGraph g ^IndexedWord node]
-  (let [^Pair pair (.yieldSpan g node)]
+  "The span of the subtree yield of this vertex in dependency graph g.
+  Returns a zero-indexed pair of integers; begin is inclusive and end is exclusive."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (let [^Pair pair (.yieldSpan g vertex)]
     [(.first pair) (.second pair)]))
 
-(defn siblings
-  "Returns the other children of the node's parent."
-  [^SemanticGraph g ^IndexedWord node]
-  (.getSiblings g node))
-
 (defn path-to-root
-  "Find the path from the given node to the root."
-  [^SemanticGraph g ^IndexedWord node]
-  (.getPathToRoot g node))
+  "Find the path from the given vertex to the root of dependency graph g."
+  [^SemanticGraph g ^IndexedWord vertex]
+  (.getPathToRoot g vertex))
 
 (defn parse
-  "Create a SemanticGraph from a string using the compact string format.
+  "Create a dependency graph (SemanticGraph) from a string using the compact string format.
    Example: [ate subj>Bill dobj>[muffins compound>blueberry]]"
   [^String s]
   (SemanticGraph/valueOf s))
@@ -129,9 +157,9 @@
    :word-index CoreLabel$OutputFormat/WORD_INDEX})
 
 (defn formatted-string
-  "Format according to style; otherwise uses default formatting.
-  Style can be a SemanticGraphFormatter or one of :xml, :list,
-  :readable, :recursive, :pos, :compact, :compact-pos, or :dot."
+  "Format dependency graph g according to style; otherwise uses default formatting.
+  Style can be a SemanticGraphFormatter or one of:
+      :xml, :list, :readable, :recursive, :pos, :compact, :compact-pos, -or- :dot."
   ([^SemanticGraph g]
    (.toFormattedString g))
   ([style ^SemanticGraph g & {:keys [graph-name label-format]
@@ -151,8 +179,40 @@
      (.toFormattedString g ^SemanticGraphFormatter style))))
 
 (defn loom-digraph
-  "Converts a SemanticGraph into a loom Digraph; necessary for certain loom functionality."
+  "Creates a loom Digraph from dependency graph g; necessary for certain loom functionality."
   [^SemanticGraph g]
-  (let [node-set (loom.graph/nodes g)
-        get-children #(list % (loom.graph/successors* g %))]
-    (loom.graph/digraph (apply hash-map (mapcat get-children node-set)))))
+  (let [vertex-set (vertices g)
+        vertex+children #(list % (children g %))]
+    (loom.graph/digraph (apply hash-map (mapcat vertex+children vertex-set)))))
+
+(defn- flip
+  "Flips the governor and dependent of a TypedDependency td."
+  [^TypedDependency td]
+  ;; ROOT isn't a real vertex, it is just used to mark the root vertex
+  (if (= (.reln td) (GrammaticalRelation/ROOT))
+    (TypedDependency. (.reln td) (.gov td) (.dep td))
+    (TypedDependency. (.reln td) (.dep td) (.gov td))))
+
+;; The following implementations of loom protocols represent alternative graph functions.
+;; They are only strictly necessary for supporting loom algorithms on SemanticGraphs.
+;; Unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors,
+;; so loom functionality that depends on these constraints require conversion using loom-digraph.
+(extend-type SemanticGraphEdge
+  Edge
+  (src [edge] (governor edge))
+  (dest [edge] (dependent edge)))
+
+(extend-type SemanticGraph
+  Graph
+  (nodes [g] (vertices g))
+  (edges [g] (edges g))
+  (has-node? [g node] (contains-vertex? g node))
+  (has-edge? [g n1 n2] (contains-edge? g n1 n2))
+  (successors* [g node] (children g node))
+  (out-degree [g node] (out-degree g node))
+  (out-edges [g node] (outgoing-edges g node))
+  Digraph
+  (predecessors* [g node] (parents g node))
+  (in-degree [g node] (in-degree g node))
+  (in-edges [g node] (incoming-edges g node))
+  (transpose [g] (SemanticGraph. ^Collection (map flip (.typedDependencies g)))))
