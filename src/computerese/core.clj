@@ -1,4 +1,4 @@
-(ns corenlp-clj.core
+(ns computerese.core
   (:import [java.util Properties]
            [edu.stanford.nlp.pipeline StanfordCoreNLP]))
 

@@ -1,4 +1,4 @@
-(ns corenlp-clj.semgraph.semgrex
+(ns computerese.semgraph.semgrex
   (:import [edu.stanford.nlp.semgraph.semgrex SemgrexPattern SemgrexMatcher]
            [edu.stanford.nlp.semgraph SemanticGraph]))
 

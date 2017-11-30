@@ -1,4 +1,4 @@
-(ns corenlp-clj.annotations
+(ns computerese.annotations
   (:import [edu.stanford.nlp.pipeline]
            [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation

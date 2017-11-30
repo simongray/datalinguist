@@ -1,4 +1,4 @@
-(ns corenlp-clj.loom.io
+(ns computerese.loom.io
   (:require [corenlp-clj.semgraph.core :as semgraph]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]))

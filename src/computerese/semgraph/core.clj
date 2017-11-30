@@ -1,4 +1,4 @@
-(ns corenlp-clj.semgraph.core
+(ns computerese.semgraph.core
   (:require [loom.graph :refer [Graph Digraph Edge]]
             [loom.attr :refer [AttrGraph]])
   (:import [edu.stanford.nlp.semgraph SemanticGraph SemanticGraphEdge SemanticGraph$OutputFormat SemanticGraphFormatter]

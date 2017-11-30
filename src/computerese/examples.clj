@@ -1,4 +1,4 @@
-(ns corenlp-clj.examples
+(ns computerese.examples
   (:require [corenlp-clj.core :refer :all]
             [corenlp-clj.annotations :refer :all]
             [corenlp-clj.semgraph.core :refer :all]

@@ -1,4 +1,4 @@
-(defproject corenlp-clj "0.1.0-SNAPSHOT"
+(defproject computerese "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :jvm-opts ["-Xmx2G"] ; CoreNLP uses up memory fast
