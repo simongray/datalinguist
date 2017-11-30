@@ -1,7 +1,8 @@
 # Computerese
 ````
-computerese |kəmˌpjuːtəˈriːz|
-noun, informal
+COMPUTERESE |kəmˌpjuːtəˈriːz|
+
+noun (informal)
   the technical language and jargon used in computing and computer science.
 ````
 
