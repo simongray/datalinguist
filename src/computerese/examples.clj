@@ -1,8 +1,8 @@
 (ns computerese.examples
-  (:require [corenlp-clj.core :refer :all]
-            [corenlp-clj.annotations :refer :all]
-            [corenlp-clj.semgraph.core :refer :all]
-            [corenlp-clj.loom.io :refer [view]])
+  (:require [computerese.core :refer :all]
+            [computerese.annotations :refer :all]
+            [computerese.semgraph.core :refer :all]
+            [computerese.loom.io :refer [view]])
   (:import (edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation)))
 
 
@@ -10,7 +10,7 @@
 
 ;; create a custom Stanford CoreNLP pipeline
 ;; English is the default language and a pipeline setup rarely requires many params
-(def nlp (pipeline {"annotators" (prerequisites ["depparse" "lemma" "ner"])}))
+(def nlp (pipeline {:annotators (prerequisites ["depparse" "lemma" "ner"])}))
 
 ;; using class names
 (->> "Any annotation can be accessed using the proper Annotation class name."
@@ -95,16 +95,16 @@
 
 ;; create a custom Chinese Stanford CoreNLP pipeline
 ;; straying from the default English parameters requires some additional setup
-(def nlp (pipeline {"annotators"                   (prerequisites "depparse")
-                    "depparse.model"               "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"
-                    "ndepparse.language"           "chinese"
-                    "tokenize.language"            "zh"
-                    "segment.model"                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz"
-                    "segment.sighanCorporaDict"    "edu/stanford/nlp/models/segmenter/chinese"
-                    "segment.serDictionary"        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz"
-                    "segment.sighanPostProcessing" "true"
-                    "ssplit.boundaryTokenRegex"    "[.。]|[!?！？]+"
-                    "pos.model"                    "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger"}))
+(def nlp (pipeline {:annotators "tokenize,ssplit,pos,depparse",
+                    :depparse   {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
+                    :ndepparse  {:language "chinese"},
+                    :tokenize   {:language "zh"},
+                    :segment    {:model                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz",
+                                 :sighanCorporaDict    "edu/stanford/nlp/models/segmenter/chinese",
+                                 :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
+                                 :sighanPostProcessing "true"},
+                    :ssplit     {:boundaryTokenRegex "[.。]|[!?！？]+"},
+                    :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger"}}))
 
 ;; words are segmented as part of the annotation process
 (->> "妈妈骂马吗？我不清楚，你问问她。"
