@@ -1,6 +1,6 @@
-(ns corenlp-clj.core-test
+(ns computerese.core-test
   (:require [clojure.test :refer :all]
-            [corenlp-clj.core :refer :all]))
+            [computerese.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
