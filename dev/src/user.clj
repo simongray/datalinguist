@@ -1,16 +1,33 @@
-(ns computerese.examples
+(ns user
   (:require [computerese.core :refer :all]
             [computerese.annotations :refer :all]
             [computerese.semgraph.core :refer :all]
             [computerese.loom.io :refer [view]])
   (:import (edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation)))
 
-(comment
-  ;;;; ENGLISH SECTION
+(defn en-pipeline
+  []
+  (pipeline {:annotators (prerequisites ["depparse" "lemma"])}))
 
+;; https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
+(defn zh-pipeline
+  []
+  (pipeline {:annotators "tokenize,ssplit,pos,depparse",
+             :depparse   {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
+             :ndepparse  {:language "chinese"},
+             :tokenize   {:language "zh"},
+             :segment    {:model                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz",
+                          :sighanCorporaDict    "edu/stanford/nlp/models/segmenter/chinese",
+                          :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
+                          :sighanPostProcessing "true"},
+             :ssplit     {:boundaryTokenRegex "[.。]|[!?！？]+"},
+             :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger"}}))
+
+(comment
+  ;;; ENGLISH
   ;; create a custom Stanford CoreNLP pipeline
   ;; English is the default language and a pipeline setup rarely requires many params
-  (def nlp (pipeline {:annotators (prerequisites ["depparse" "lemma" "ner"])}))
+  (def nlp (en-pipeline))
 
   ;; using class names
   (->> "Any annotation can be accessed using the proper Annotation class name."
@@ -91,20 +108,10 @@
   ;=> https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png
 
 
-  ;;;; CHINESE SECTION
-
+  ;;; CHINESE
   ;; create a custom Chinese Stanford CoreNLP pipeline
   ;; straying from the default English parameters requires some additional setup
-  (def nlp (pipeline {:annotators "tokenize,ssplit,pos,depparse",
-                      :depparse   {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
-                      :ndepparse  {:language "chinese"},
-                      :tokenize   {:language "zh"},
-                      :segment    {:model                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz",
-                                   :sighanCorporaDict    "edu/stanford/nlp/models/segmenter/chinese",
-                                   :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
-                                   :sighanPostProcessing "true"},
-                      :ssplit     {:boundaryTokenRegex "[.。]|[!?！？]+"},
-                      :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger"}}))
+  (def nlp (zh-pipeline))
 
   ;; words are segmented as part of the annotation process
   (->> "妈妈骂马吗？我不清楚，你问问她。"
@@ -119,17 +126,3 @@
        sentences
        first
        dependency-graph))
-  ;=> #object[edu.stanford.nlp.semgraph.SemanticGraph
-  ;           0x36678fe4
-  ;           "-> 提出/VV (root)
-  ;              -> 有/VE (conj)
-  ;                -> 一/CD (dep)
-  ;                  -> 次/M (mark:clf)
-  ;              -> 他/PN (nsubj)
-  ;              -> 大胆/AD (advmod)
-  ;              -> 了/AS (aux:asp)
-  ;              -> 看法/NN (dobj)
-  ;                -> 自己/PN (nmod:assmod)
-  ;                  -> 的/DEG (case)
-  ;              -> 。/PU (punct)
-  ;            "])
