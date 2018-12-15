@@ -18,12 +18,12 @@
       [])))
 
 (defn path->str
-  "Converts a key path (e.g. from keys-in) to a flattened CoreNLP key."
+  "Convert a key path (e.g. from keys-in) to a flattened CoreNLP key."
   [ks]
   (str/join "." (map name ks)))
 
 (defn flatten-map
-  "Flattens a map of nested keys."
+  "Flatten a map of nested keys."
   [m]
   (let [kscoll   (keys-in m)
         flat-k+v (fn [ks] [(path->str ks) (get-in m ks)])]
@@ -37,9 +37,11 @@
     props))
 
 (defn prerequisites
-  "Find the prerequisities for the specified pipeline setup or a single annotator."
-  ([xs opts]
-   (StanfordCoreNLP/ensurePrerequisiteAnnotators (into-array xs) (properties opts)))
+  "Find the prerequisities of the given pipeline setup or single annotator."
+  ([annotators opts]
+   (let [arr   (into-array annotators)
+         props (properties opts)]
+     (StanfordCoreNLP/ensurePrerequisiteAnnotators arr props)))
   ([x]
    (if (string? x)
      (prerequisites [x] {})
