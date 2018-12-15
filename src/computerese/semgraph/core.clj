@@ -1,37 +1,43 @@
-(ns computerese.semgraph.core
+(ns ^{:doc "Fns dealing with dependency grammar"} computerese.semgraph.core
   (:require [loom.graph :refer [Graph Digraph Edge]]
             [loom.attr :refer [AttrGraph]])
-  (:import [edu.stanford.nlp.semgraph SemanticGraph SemanticGraphEdge SemanticGraph$OutputFormat SemanticGraphFormatter]
-           [edu.stanford.nlp.trees TypedDependency GrammaticalRelation]
-           [edu.stanford.nlp.ling IndexedWord CoreLabel$OutputFormat]
+  (:import [java.util Collection]
+           [edu.stanford.nlp.ling IndexedWord
+                                  CoreLabel$OutputFormat]
            [edu.stanford.nlp.util Pair]
-           [java.util Collection]))
+           [edu.stanford.nlp.trees TypedDependency
+                                   GrammaticalRelation]
+           [edu.stanford.nlp.semgraph SemanticGraph
+                                      SemanticGraphEdge
+                                      SemanticGraph$OutputFormat
+                                      SemanticGraphFormatter]))
 
-;;;; This namespace contains functions relevant for dependency grammar.
-;;;; Mutating functions have deliberately not been re-implemented.
-;;;;
-;;;; Properties of SemanticGraphEdge that were left unimplemented:
-;;;;     * weight: seems like it isn't used at all
-;;;;     * extra: it's only used internally in some Util function
-;;;;     * duplicated functions, e.g. only governor implemented, not source
-;;;;
-;;;; Properties of SemanticGraph that were left unimplemented:
-;;;;     * obvious cruft:
-;;;;         - matchPatternToVertex
-;;;;         - variations on basic graph functionality, e.g. getChildList
-;;;;         - isNegatedVerb, isNegatedVertex, isInConditionalContext, etc
-;;;;         - getSubgraphVertices is equal in functionality to descendants
-;;;;     * useless utility functions, easily replicated:
-;;;;         - toRecoveredSentenceString and the like
-;;;;         - empty, size
-;;;;         - sorting methods; just use Clojure sort, e.g. (sort (vertices g))
-;;;;         - descendants; use loom, e.g. (loom.alg/pre-traverse g vertex)
-;;;;
-;;;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation left unimplemented:
-;;;;     * everything! they seem mostly just for internal use
-;;;;     * IndexedWord is simply a wrapper class for CoreLabel
-;;;;
-;;;; TODO: implement useful parts of SemanticGraphUtils
+;; TODO: implement useful parts of SemanticGraphUtils
+
+;; This namespace contains functions relevant for dependency grammar.
+;; Mutating functions have deliberately not been re-implemented.
+;;
+;; Properties of SemanticGraphEdge that were left unimplemented:
+;;     * weight: seems like it isn't used at all
+;;     * extra: it's only used internally in some Util function
+;;     * duplicated functions, e.g. only governor implemented, not source
+;;
+;; Properties of SemanticGraph that were left unimplemented:
+;;     * obvious cruft:
+;;         - matchPatternToVertex
+;;         - variations on basic graph functionality, e.g. getChildList
+;;         - isNegatedVerb, isNegatedVertex, isInConditionalContext, etc
+;;         - getSubgraphVertices is equal in functionality to descendants
+;;     * useless utility functions, easily replicated:
+;;         - toRecoveredSentenceString and the like
+;;         - empty, size
+;;         - sorting methods; just use Clojure sort, e.g. (sort (vertices g))
+;;         - descendants; use loom, e.g. (loom.alg/pre-traverse g vertex)
+;;
+;; Properties of Pair, IndexedWord, TypedDependency and GrammaticalRelation
+;; left unimplemented:
+;;     * everything! they seem mostly just for internal use
+;;     * IndexedWord is simply a wrapper class for CoreLabel
 
 (defn governor
   "The governor (= source) of the relation represented by edge."
@@ -124,7 +130,7 @@
 
 (defn span
   "The span of the subtree yield of this vertex in dependency graph g.
-  Returns a zero-indexed pair of integers; begin is inclusive and end is exclusive."
+  Returns a zero-indexed pair of integers where end is exclusive."
   [^SemanticGraph g ^IndexedWord vertex]
   (let [^Pair pair (.yieldSpan g vertex)]
     [(.first pair) (.second pair)]))
@@ -135,7 +141,7 @@
   (.getPathToRoot g vertex))
 
 (defn parse
-  "Create a dependency graph (SemanticGraph) from a string using the compact string format.
+  "Create a dependency graph from a string using the compact string format.
    Example: [ate subj>Bill dobj>[muffins compound>blueberry]]"
   [^String s]
   (SemanticGraph/valueOf s))
@@ -143,28 +149,28 @@
 ;; From the CoreLabel class - may move somewhere else in the future.
 ;; As per the messy conventions of Stanford CoreNLP, word = value.
 (def corelabel-formats
-  {:all CoreLabel$OutputFormat/ALL
-   :lemma-index CoreLabel$OutputFormat/LEMMA_INDEX
-   :map CoreLabel$OutputFormat/MAP
-   :value CoreLabel$OutputFormat/VALUE
-   :value-index CoreLabel$OutputFormat/VALUE_INDEX
+  {:all             CoreLabel$OutputFormat/ALL
+   :lemma-index     CoreLabel$OutputFormat/LEMMA_INDEX
+   :map             CoreLabel$OutputFormat/MAP
+   :value           CoreLabel$OutputFormat/VALUE
+   :value-index     CoreLabel$OutputFormat/VALUE_INDEX
    :value-index-map CoreLabel$OutputFormat/VALUE_INDEX_MAP
-   :value-map CoreLabel$OutputFormat/VALUE_MAP
-   :value-tag CoreLabel$OutputFormat/VALUE_TAG
+   :value-map       CoreLabel$OutputFormat/VALUE_MAP
+   :value-tag       CoreLabel$OutputFormat/VALUE_TAG
    :value-tag-index CoreLabel$OutputFormat/VALUE_TAG_INDEX
-   :value-tag-ner CoreLabel$OutputFormat/VALUE_TAG_NER
-   :word CoreLabel$OutputFormat/WORD
-   :word-index CoreLabel$OutputFormat/WORD_INDEX})
+   :value-tag-ner   CoreLabel$OutputFormat/VALUE_TAG_NER
+   :word            CoreLabel$OutputFormat/WORD
+   :word-index      CoreLabel$OutputFormat/WORD_INDEX})
 
 (defn formatted-string
-  "Format dependency graph g according to style; otherwise uses default formatting.
-  Style can be a SemanticGraphFormatter or one of:
-      :xml, :list, :readable, :recursive, :pos, :compact, :compact-pos, -or- :dot."
+  "Format dependency graph g according to style; otherwise use default format.
+  Style can be a SemanticGraphFormatter or one of: :xml, :list, :readable,
+  :recursive, :pos, :compact, :compact-pos, or :dot."
   ([^SemanticGraph g]
    (.toFormattedString g))
   ([style ^SemanticGraph g & {:keys [graph-name label-format]
-                              :or {graph-name ""
-                                   label-format :value-tag-index}}]
+                              :or   {graph-name   ""
+                                     label-format :value-tag-index}}]
    (if (keyword? style)
      (case style
        :xml (.toString g SemanticGraph$OutputFormat/XML)
@@ -178,25 +184,26 @@
        :default (.toFormattedString g))
      (.toFormattedString g ^SemanticGraphFormatter style))))
 
+;; Necessary for certain loom functionality
 (defn loom-digraph
-  "Creates a loom Digraph from dependency graph g; necessary for certain loom functionality."
+  "Create a loom Digraph from dependency graph g."
   [^SemanticGraph g]
-  (let [vertex-set (vertices g)
+  (let [vertex-set      (vertices g)
         vertex+children #(list % (children g %))]
     (loom.graph/digraph (apply hash-map (mapcat vertex+children vertex-set)))))
 
 (defn- flip
-  "Flips the governor and dependent of a TypedDependency td."
+  "Flip the governor and dependent of a TypedDependency td."
   [^TypedDependency td]
   ;; ROOT isn't a real vertex, it is just used to mark the root vertex
   (if (= (.reln td) (GrammaticalRelation/ROOT))
     (TypedDependency. (.reln td) (.gov td) (.dep td))
     (TypedDependency. (.reln td) (.dep td) (.gov td))))
 
-;; The following implementations of loom protocols represent alternative graph functions.
-;; They are only strictly necessary for supporting loom algorithms on SemanticGraphs.
-;; Unfortunately loom sometimes implicitly treats edges as [n1 n2] vectors,
-;; so loom functionality that depends on these constraints require conversion using loom-digraph.
+;; The following implementations of loom protocols are only strictly necessary
+;; for supporting loom algorithms on SemanticGraphs. Unfortunately loom
+;; sometimes implicitly treats edges as [n1 n2] vectors, so loom functionality
+;; that depends on these constraints require conversion using loom-digraph.
 (extend-type SemanticGraphEdge
   Edge
   (src [edge] (governor edge))
@@ -211,6 +218,7 @@
   (successors* [g node] (children g node))
   (out-degree [g node] (out-degree g node))
   (out-edges [g node] (outgoing-edges g node))
+
   Digraph
   (predecessors* [g node] (parents g node))
   (in-degree [g node] (in-degree g node))
