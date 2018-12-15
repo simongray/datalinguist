@@ -1,6 +1,5 @@
-(ns computerese.annotations
-  (:import [edu.stanford.nlp.pipeline]
-           [edu.stanford.nlp.util TypesafeMap]
+(ns ^{:doc "Fns for accessing CoreNLP annotations."} computerese.annotations
+  (:import [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
                                   CoreAnnotations$LemmaAnnotation
                                   CoreAnnotations$PartOfSpeechAnnotation
@@ -18,19 +17,25 @@
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
 
-;;;; This namespace contains convenience functions for accessing the most common annotations of Stanford CoreNLP.
-;;;; The functions are designed to be chained using the ->> macro or through function composition.
-;;;; Please note that *any* annotation can be accessed using corenlp-clj.annotations/annotation,
-;;;; you are not just limited to using the convenience functions provided in this namespace.
-;;;;
-;;;; The functions here mirror the annotation system of Stanford CoreNLP: once the returned object is not a TypesafeMap
-;;;; or a seq of TypesafeMap objects, annotation functions cannot retrieve anything from it.
-;;;; An example of this might be the dependency-graph annotation which returns a SemanticGraph object.
-;;;; However, using a function such as corenlp-clj.semgraph/nodes on a SemanticGraph object returns IndexedWord objects
-;;;; which *are* implementations of TypesafeMap. Consequently, the annotation functions can take them as params.
-;;;;
-;;;; As a general rule, functions with names that are pluralised have a seqable output, e.g. sentences or tokens.
-;;;; This does not matter when chaining these functions, as all annotation functions will also implicitly map to seqs.
+;; This namespace contains convenience functions for accessing the most common
+;; annotations of Stanford CoreNLP. The functions are designed to be chained
+;; using the ->> macro or through function composition.
+
+;; Please note that *any* annotation can be accessed using
+;; corenlp-clj.annotations/annotation, you are not just limited to using the
+;; convenience functions provided in this namespace.
+;;
+;; The functions here mirror the annotation system of Stanford CoreNLP:
+;; once the returned object isn't a TypesafeMap or a seq of TypesafeMap objects,
+;; annotation functions cannot retrieve anything from it. An example of this
+;; might be `dependency-graph` which returns a SemanticGraph object. However,
+;; using a function such as corenlp-clj.semgraph/nodes on a SemanticGraph object
+;; returns IndexedWord objects which *are* implementations of TypesafeMap.
+;; Consequently, the annotation functions can take them as params.
+;;
+;; As a general rule, functions with names that are pluralised have a seqable
+;; output, e.g. sentences or tokens. This does not matter when chaining these
+;; functions, as all annotation functions will also implicitly map to seqs.
 
 (defn annotation
   "Access the annotation of x as specified by class.
@@ -40,27 +45,39 @@
     (map (partial annotation class) x)
     (.get ^TypesafeMap x class)))
 
-(defn text "The text of x (TextAnnotation)." [x]
+(defn text
+  "The text of x (TextAnnotation)."
+  [x]
   (annotation CoreAnnotations$TextAnnotation x))
 
-(defn lemma "The lemma of x (LemmaAnnotation)." [x]
+(defn lemma
+  "The lemma of x (LemmaAnnotation)."
+  [x]
   (annotation CoreAnnotations$LemmaAnnotation x))
 
-(defn pos "The part-of-speech of x (PartOfSpeechAnnotation)." [x]
+(defn pos
+  "The part-of-speech of x (PartOfSpeechAnnotation)."
+  [x]
   (annotation CoreAnnotations$PartOfSpeechAnnotation x))
 
-(defn ner "The named entity tag of x (NamedEntityTagAnnotation)." [x]
+(defn ner
+  "The named entity tag of x (NamedEntityTagAnnotation)."
+  [x]
   (annotation CoreAnnotations$NamedEntityTagAnnotation x))
 
-(defn sentences "The sentences of x (SentencesAnnotation)." [x]
+(defn sentences
+  "The sentences of x (SentencesAnnotation)."
+  [x]
   (annotation CoreAnnotations$SentencesAnnotation x))
 
-(defn tokens "The tokens of x (TokensAnnotation)." [x]
+(defn tokens
+  "The tokens of x (TokensAnnotation)."
+  [x]
   (annotation CoreAnnotations$TokensAnnotation x))
 
 (defn offset
-  "The character offset of x (CharacterOffsetBeginAnnotation -or- CharacterOffsetEndAnnotation).
-  Style can be :begin (default) or :end."
+  "The character offset of x (CharacterOffsetBeginAnnotation -or-
+  CharacterOffsetEndAnnotation). Style can be :begin (default) or :end."
   ([style x]
    (case style
      :begin (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
