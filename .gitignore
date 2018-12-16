@@ -111,3 +111,5 @@ Temporary Items
 
 # for debugging
 StanfordCoreNLP-chinese.properties
+resources/REBL-*.jar
+.rebl

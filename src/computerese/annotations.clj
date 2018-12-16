@@ -1,5 +1,7 @@
 (ns ^{:doc "Fns for accessing CoreNLP annotations."} computerese.annotations
   (:require [clojure.string :as str]
+            [clojure.datafy :refer [datafy]]
+            [clojure.core.protocols :as p]
             [camel-snake-kebab.core :as csk])
   (:import [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
@@ -137,21 +139,16 @@
       (str/replace #"^is-(.+)" #(str (second %) "?"))
       (keyword)))
 
-(defn datafy
-  "Produce a map of annotations from an annotation."
-  [x]
-  (let [tsm?            (partial instance? TypesafeMap)
-        annotations-map (fn [m [k ^TypesafeMap tsm]]
-                          (assoc m k (datafy tsm)))]
-    (cond
-      (tsm? x)
-      (->> (.keySet ^TypesafeMap x)
-           (map #(vector (class->k %) (.get ^TypesafeMap x %)))
-           (reduce annotations-map {}))
+(defn- datafy-tsm
+  "Produce a map of annotations from a TypesafeMap."
+  [^TypesafeMap tsm]
+  (->> (.keySet ^TypesafeMap tsm)
+       (map #(vector (class->k %) (annotation % tsm)))
+       (reduce (fn [m [k v]]
+                 (assoc m k (datafy v)))
+               {})))
 
-      (and (seqable? x)
-           (not (empty? x))
-           (every? tsm? x))
-      (map datafy x)
-
-      :else x)))
+(extend-protocol p/Datafiable
+  TypesafeMap
+  (datafy [x]
+    (datafy-tsm x)))

@@ -4,6 +4,7 @@
     <wildcardResourcePatterns>
       <entry name="!dev-resources:*" />
       <entry name="!resources:*" />
+      <entry name="!REBL-0.9.109.jar:*" />
       <entry name="!?*.java" />
       <entry name="!?*.form" />
       <entry name="!?*.class" />
