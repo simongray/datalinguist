@@ -10,7 +10,7 @@
   (:require [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]
             [computerese.semgraph.core :as semgraph]
-            [loom.io :as io]))
+            [loom.io :as lio]))
 
 (defn render-to-bytes
   [g & {:keys [alg fmt] :or {alg "dot" fmt :png} :as opts}]
@@ -18,6 +18,9 @@
         cmd (sh (name alg) (str "-T" (name fmt)) :in dot :out-enc :bytes)]
     (:out cmd)))
 
-(def view
-  (with-redefs [io/render-to-bytes render-to-bytes]
-    view))
+(defn view
+  [g & {:keys [fmt] :or {fmt :png} :as opts}]
+  (with-redefs [lio/render-to-bytes render-to-bytes]
+    (if opts
+      (lio/view g opts)
+      (lio/view g))))
