@@ -15,7 +15,7 @@ Computerese has a very simple API for executing various NLP operations.
 ### 1. Building an annotation pipeline
 Before anything can happen, you need to build a pipeline. 
 Pipelines are built using plain Clojure data structures which are converted into
-the [properties](https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP.properties):
+[properties](https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP.properties):
 
 ```Clojure
 (require '[computerese.core :refer :all]
@@ -46,7 +46,7 @@ lemmatisation, so let's extract some of these annotations from the text:
 
 ```Clojure
 ;; Get a dependency graph of the second sentence using the annotation functions.
-(-> annotated-text sentences second dependency-graph)
+(->> annotated-text sentences second dependency-graph)
 ;#object[edu.stanford.nlp.semgraph.SemanticGraph
 ;        0x79d17876
 ;        "-> one/CD (root)
@@ -58,9 +58,9 @@ lemmatisation, so let's extract some of these annotations from the text:
 
 ;; Extract lemmas from the text using the annotation functions.
 (->> "She has beaten him before."
-       nlp
-       tokens
-       lemma)
+     nlp
+     tokens
+     lemma)
 ;=> ("she" "have" "beat" "he" "before" ".")
 
 ```
@@ -76,10 +76,10 @@ function from Loom (requires Graphiz installed).
 (require '[computerese.loom.io :refer [view]])
 
 (view (->> "The dependencies of this sentence have been visualised using Graphviz."
-         nlp
-         sentences
-         dependency-graph
-         first))
+           nlp
+           sentences
+           dependency-graph
+           first))
 ```
 
 ![Dependency graph visualised using Graphviz](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png)
