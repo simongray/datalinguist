@@ -1,4 +1,6 @@
 (ns ^{:doc "Fns for accessing CoreNLP annotations."} computerese.annotations
+  (:require [clojure.string :as str]
+            [camel-snake-kebab.core :as csk])
   (:import [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
                                   CoreAnnotations$LemmaAnnotation
@@ -116,3 +118,40 @@
      :enhanced++ (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)))
   ([x]
    (dependency-graph :enhanced++ x)))
+
+(defn- class->k
+  "Convert a Java class name into an (occasionally namespaced) keyword.
+
+   (helper fn for annotations-map)"
+  [^Class c]
+  (-> (str c)
+      (subs 6)                                              ; remove "class "
+      (str/split #"\.|\$")
+      (->> (filter (partial re-find #"Annotation"))
+           (map #(str/replace % #"Annotation[s]?" ""))
+           (map #(str/replace % #"Core?" ""))
+           (remove empty?)
+           (interpose "/")
+           (map csk/->kebab-case)
+           (str/join))
+      (str/replace #"^is-(.+)" #(str (second %) "?"))
+      (keyword)))
+
+(defn datafy
+  "Produce a map of annotations from an annotation."
+  [x]
+  (let [tsm?            (partial instance? TypesafeMap)
+        annotations-map (fn [m [k ^TypesafeMap tsm]]
+                          (assoc m k (datafy tsm)))]
+    (cond
+      (tsm? x)
+      (->> (.keySet ^TypesafeMap x)
+           (map #(vector (class->k %) (.get ^TypesafeMap x %)))
+           (reduce annotations-map {}))
+
+      (and (seqable? x)
+           (not (empty? x))
+           (every? tsm? x))
+      (map datafy x)
+
+      :else x)))

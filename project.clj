@@ -5,6 +5,7 @@
   :source-paths ["src"]
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [aysylu/loom "1.0.2"]
+                 [camel-snake-kebab "0.4.0"]
                  [edu.stanford.nlp/stanford-corenlp "3.9.2"]]
 
   :profiles {:dev {:dependencies [[edu.stanford.nlp/stanford-corenlp "3.9.2" :classifier "models"]
