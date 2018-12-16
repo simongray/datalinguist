@@ -3,7 +3,8 @@
             [clojure.datafy :refer [datafy]]
             [clojure.core.protocols :as p]
             [camel-snake-kebab.core :as csk])
-  (:import [edu.stanford.nlp.util TypesafeMap]
+  (:import [java.util ArrayList]
+           [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
                                   CoreAnnotations$LemmaAnnotation
                                   CoreAnnotations$PartOfSpeechAnnotation
@@ -152,3 +153,17 @@
   TypesafeMap
   (datafy [x]
     (datafy-tsm x)))
+
+(defn data
+  "Return a recursively datafied representation of x.
+  Call at the end of an annotation chain to get plain Clojure data structures."
+  [x]
+  (let [x' (datafy x)]
+    (cond
+      (instance? ArrayList x')
+      (mapv data x')
+
+      (map? x')
+      (into {} (for [[k v] x'] [k (data v)]))
+
+      :else x')))
