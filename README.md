@@ -42,11 +42,11 @@ This data can then be queried using the annotation functions.
 
 ### 3. Extracting annotations using the annotation functions
 In our example we built a pipeline that could do both dependency parsing and
-lemmatisation, so let's extract some of these annotations from the text:
+lemmatisation, so let's extract a dependency graph of the second sentence:
 
 ```Clojure
-;; Get a dependency graph of the second sentence using the annotation functions.
 (->> annotated-text sentences second dependency-graph)
+;=>
 ;#object[edu.stanford.nlp.semgraph.SemanticGraph
 ;        0x79d17876
 ;        "-> one/CD (root)
@@ -55,14 +55,38 @@ lemmatisation, so let's extract some of these annotations from the text:
 ;           -> another/DT (det)
 ;           -> ./. (punct)
 ;         "]
+```
 
-;; Extract lemmas from the text using the annotation functions.
+We can also annotate another piece of text and return the lemmas:
+
+```Clojure
 (->> "She has beaten him before."
      nlp
      tokens
      lemma)
 ;=> ("she" "have" "beat" "he" "before" ".")
+```
 
+If at any point we grow tired of accessing Java objects using the annotation
+functions, we can call `data` and get plain Clojure data structures:
+
+```Clojure
+(-> annotated-text tokens second data)
+;=>
+;{:token-end 2,
+; :original-text "is",
+; :index 2,
+; :part-of-speech "VBZ",
+; :token-begin 1,
+; :value "is",
+; :sentence-index 0,
+; :lemma "be",
+; :newline? false,
+; :character-offset-begin 5,
+; :after " ",
+; :character-offset-end 7,
+; :before " ",
+; :text "is"}
 ```
 
 ## Loom integration
