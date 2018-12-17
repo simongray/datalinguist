@@ -127,23 +127,23 @@
 (defn- class->k
   "Convert a Java class name into an (occasionally namespaced) keyword.
 
-   (helper fn for annotations-map)"
+   (helper fn for datafy-tsm)"
   [^Class c]
   (-> (str c)
       (subs 6)                                              ; remove "class "
       (str/split #"\.|\$")
       (->> (filter (partial re-find #"Annotation"))
            (map #(str/replace % #"Annotation[s]?" ""))
-           (map #(str/replace % #"Core?" ""))
+           (map #(str/replace % #"Core" ""))
            (remove empty?)
-           (interpose "/")
            (map csk/->kebab-case)
+           (interpose "/")
            (str/join))
       (str/replace #"^is-(.+)" #(str (second %) "?"))
       (keyword)))
 
 (defn- datafy-tsm
-  "Produce a map of annotations from a TypesafeMap."
+  "Produce a map of the annotations of a TypesafeMap."
   [^TypesafeMap tsm]
   (->> (.keySet ^TypesafeMap tsm)
        (map #(vector (class->k %) (annotation % tsm)))
