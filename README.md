@@ -13,7 +13,7 @@ Stanford CoreNLP.
 Computerese has a very simple API for executing various NLP operations.
 
 ### 1. Building an annotation pipeline
-Before anything can happen, you need to build a pipeline. 
+Before anything can happen, we need to construct an NLP pipeline. 
 Pipelines are built using plain Clojure data structures which are converted into
 [properties](https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP.properties):
 
@@ -37,8 +37,8 @@ annotated data.
 (def annotated-text (nlp "This is a piece of text. This is another one."))
 ```
 
-The data consists of Java objects and takes the shape of a tree.
-This data can then be queried using the annotation functions.
+This data consists of various Java objects and takes the shape of a tree.
+The data can then be queried using the annotation functions.
 
 ### 3. Extracting annotations using the annotation functions
 In our example we built a pipeline that could do both dependency parsing and
@@ -89,8 +89,17 @@ functions, we can call `data` and get plain Clojure data structures:
 ; :text "is"}
 ```
 
+## View in the REBL
+The pipeline's annotated output data extends the `Datafiable` protocol 
+introduced in Clojure 1.10 and can therefore be navigated using the 
+[REBL](https://github.com/cognitect-labs/REBL-distro).
+ 
+![Navigating annotations in the REBL](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/rebl_example.png)
+
+Within the REBL, text annotations can be visualised and analysed interactively.
+
 ## Loom integration
-The dependency graphs support the `Graph` protocol from 
+The dependency graphs support the `Graph` and `DiGraph` protocols from 
 [Loom](https://github.com/aysylu/loom) and associated algorithms.
 
 Dependency graphs can also be visualised using a modified version of the view 
@@ -107,10 +116,3 @@ function from Loom (requires Graphiz installed).
 ```
 
 ![Dependency graph visualised using Graphviz](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png)
-
-## View in the REBL
-The pipeline's output data extends the `Datafiable` protocol 
-introduced in Clojure 1.10 and can therefore be navigated using the 
-[REBL](https://github.com/cognitect-labs/REBL-distro).
- 
-![Navigating annotations in the REBL](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/rebl_example.png)
