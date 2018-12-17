@@ -59,6 +59,16 @@
   ([^SemanticGraphEdge edge]
    (relation :short edge)))
 
+(defn weight
+  "A score or weight attached to the edge (not often used)."
+  [^SemanticGraphEdge edge]
+  (.getWeight edge))
+
+(defn extra?
+  "Whether or not the dependency this edge represents was 'extra'"
+  [^SemanticGraphEdge edge]
+  (.isExtra edge))
+
 (defn vertices
   "The vertices of dependency graph g."
   [^SemanticGraph g]

@@ -2,7 +2,8 @@
   (:require [clojure.string :as str]
             [clojure.datafy :refer [datafy]]
             [clojure.core.protocols :as p]
-            [camel-snake-kebab.core :as csk])
+            [camel-snake-kebab.core :as csk]
+            [computerese.semgraph.core :as semgraph])
   (:import [java.util ArrayList]
            [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation
@@ -18,9 +19,10 @@
                                   CoreAnnotations$SentenceIndexAnnotation
                                   CoreAnnotations$CharacterOffsetBeginAnnotation
                                   CoreAnnotations$CharacterOffsetEndAnnotation]
-           [edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
+           [edu.stanford.nlp.semgraph SemanticGraph
+                                      SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]))
+                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation SemanticGraphEdge]))
 
 ;; This namespace contains convenience functions for accessing the most common
 ;; annotations of Stanford CoreNLP. The functions are designed to be chained
@@ -151,8 +153,21 @@
 
 (extend-protocol p/Datafiable
   TypesafeMap
-  (datafy [x]
-    (datafy-tsm x)))
+  (datafy [tsm]
+    (datafy-tsm tsm))
+
+  SemanticGraph
+  (datafy [g]
+    (into {} (for [vertex (semgraph/vertices g)]
+               [vertex (semgraph/outgoing-edges g vertex)])))
+
+  SemanticGraphEdge
+  (datafy [edge]
+    {:governor  (semgraph/governor edge)
+     :dependent (semgraph/dependent edge)
+     :relation  (semgraph/relation edge)
+     :weight    (semgraph/weight edge)
+     :extra?    (semgraph/extra? edge)}))
 
 (defn data
   "Return a recursively datafied representation of x.
@@ -163,7 +178,10 @@
       (instance? ArrayList x')
       (mapv data x')
 
+      (set? x')
+      (set (map data x'))
+
       (map? x')
-      (into {} (for [[k v] x'] [k (data v)]))
+      (into {} (for [[k v] x'] [(data k) (data v)]))
 
       :else x')))
