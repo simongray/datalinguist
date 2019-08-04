@@ -4,7 +4,7 @@
   :jvm-opts ["-Xmx2G"]                                      ; CoreNLP uses up memory fast
   :source-paths ["src"]
 
-  :dependencies [[org.clojure/clojure "1.10.0"]
+  :dependencies [[org.clojure/clojure "1.10.1"]
                  [aysylu/loom "1.0.2"]
                  [camel-snake-kebab "0.4.0"]
                  [edu.stanford.nlp/stanford-corenlp "3.9.2"]]
