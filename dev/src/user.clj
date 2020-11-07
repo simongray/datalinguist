@@ -1,14 +1,11 @@
 (ns user
   (:require [clojure.reflect :refer [reflect]]
-            [clojure.string :as str]
             [clojure.datafy :refer [datafy nav]]
-            [camel-snake-kebab.core :as csk]
             [dk.simongray.datalinguist :refer :all]
             [dk.simongray.datalinguist.annotations :refer :all]
             [dk.simongray.datalinguist.semgraph :refer :all]
             [dk.simongray.datalinguist.loom.io :refer [view]])
-  (:import [edu.stanford.nlp.util TypesafeMap]
-           [edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation]))
+  (:import [edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation]))
 
 (set! *warn-on-reflection* true)
 
@@ -28,7 +25,7 @@
                           :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
                           :sighanPostProcessing "true"},
              :ssplit     {:boundaryTokenRegex "[.。]|[!?！？]+"},
-             :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger"}}))
+             :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim.tagger"}}))
 
 (comment
   ;;; ENGLISH

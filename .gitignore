@@ -111,4 +111,5 @@ Temporary Items
 
 # for debugging
 StanfordCoreNLP-chinese.properties
-.idea/
+.idea
+.cpcache
