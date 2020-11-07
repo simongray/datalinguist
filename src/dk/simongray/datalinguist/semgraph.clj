@@ -1,4 +1,4 @@
-(ns ^{:doc "Fns dealing with dependency grammar"} computerese.semgraph.core
+(ns ^{:doc "Fns dealing with dependency grammar"} dk.simongray.datalinguist.semgraph
   (:require [loom.graph :refer [Graph Digraph Edge]]
             [loom.attr :refer [AttrGraph]])
   (:import [java.util Collection]

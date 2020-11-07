@@ -3,10 +3,10 @@
             [clojure.string :as str]
             [clojure.datafy :refer [datafy nav]]
             [camel-snake-kebab.core :as csk]
-            [computerese.core :refer :all]
-            [computerese.annotations :refer :all]
-            [computerese.semgraph.core :refer :all]
-            [computerese.loom.io :refer [view]])
+            [dk.simongray.datalinguist :refer :all]
+            [dk.simongray.datalinguist.annotations :refer :all]
+            [dk.simongray.datalinguist.semgraph :refer :all]
+            [dk.simongray.datalinguist.loom.io :refer [view]])
   (:import [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation]))
 

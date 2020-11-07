@@ -1,4 +1,4 @@
-(ns ^{:doc "Fns dealing with semgrex in CoreNLP"} computerese.semgraph.semgrex
+(ns ^{:doc "Fns dealing with semgrex in CoreNLP"} dk.simongray.datalinguist.semgraph.semgrex
   (:import [edu.stanford.nlp.semgraph SemanticGraph]
            [edu.stanford.nlp.semgraph.semgrex SemgrexPattern
                                               SemgrexMatcher]))

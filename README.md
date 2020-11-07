@@ -1,16 +1,8 @@
-# Computerese
-````
-COMPUTERESE |kəmˌpjuːtəˈriːz|
-
-noun (informal)
-  the technical language and jargon used in computing and computer science.
-````
-
-Computerese is a Clojure wrapper for the Natural Language Processing behemoth,
-Stanford CoreNLP.
+# DataLinguist
+DataLinguist is a Clojure wrapper for the Natural Language Processing behemoth, [Stanford CoreNLP](https://github.com/stanfordnlp/CoreNLP). The goal of the project is to support an NLP workflow in a data-oriented style, integrating relevant Clojure protocols and libraries.
 
 ## How to use
-Computerese has a very simple API for executing various NLP operations.
+DataLinguist has a very simple API for executing various NLP operations.
 
 ### 1. Building an annotation pipeline
 Before anything can happen, we need to construct an NLP pipeline. 
@@ -18,8 +10,8 @@ Pipelines are built using plain Clojure data structures which are converted into
 [properties](https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP.properties):
 
 ```Clojure
-(require '[computerese.core :refer :all]
-         '[computerese.annotations :refer :all])
+(require '[dk.simongray.datalinguist :refer :all]
+         '[dk.simongray.datalinguist.annotations :refer :all])
 
 ;; Create a closure around a CoreNLP pipeline.
 (def nlp (pipeline {:annotators (prerequisites ["depparse" "lemma"])}))
@@ -106,7 +98,7 @@ Dependency graphs can also be visualised using a modified version of the view
 function from Loom (requires Graphiz installed).
 
 ```Clojure
-(require '[computerese.loom.io :refer [view]])
+(require '[dk.simongray.datalinguist.loom.io :refer [view]])
 
 (view (->> "The dependencies of this sentence have been visualised using Graphviz."
            nlp

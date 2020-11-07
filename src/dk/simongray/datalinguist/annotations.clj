@@ -1,9 +1,9 @@
-(ns ^{:doc "Fns for accessing CoreNLP annotations."} computerese.annotations
+(ns ^{:doc "Fns for accessing CoreNLP annotations."} dk.simongray.datalinguist.annotations
   (:require [clojure.string :as str]
             [clojure.datafy :refer [datafy]]
             [clojure.core.protocols :as p]
             [camel-snake-kebab.core :as csk]
-            [computerese.semgraph.core :as semgraph])
+            [dk.simongray.datalinguist.semgraph :as semgraph])
   (:import [java.util ArrayList]
            [edu.stanford.nlp.util TypesafeMap]
            [edu.stanford.nlp.ling CoreAnnotations$TextAnnotation

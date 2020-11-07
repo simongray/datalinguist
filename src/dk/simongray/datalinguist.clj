@@ -1,4 +1,4 @@
-(ns computerese.core
+(ns dk.simongray.datalinguist
   (:require [clojure.string :as str])
   (:import [java.util Properties]
            [edu.stanford.nlp.pipeline StanfordCoreNLP]))
