@@ -11,21 +11,21 @@
 
 (defn en-pipeline
   []
-  (pipeline {:annotators (prerequisites ["depparse" "lemma"])}))
+  (->pipeline {:annotators ["depparse" "lemma" "ner"]}))
 
 ;; https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
 (defn zh-pipeline
   []
-  (pipeline {:annotators "tokenize,ssplit,pos,depparse",
-             :depparse   {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
-             :ndepparse  {:language "chinese"},
-             :tokenize   {:language "zh"},
-             :segment    {:model                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz",
-                          :sighanCorporaDict    "edu/stanford/nlp/models/segmenter/chinese",
-                          :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
-                          :sighanPostProcessing "true"},
-             :ssplit     {:boundaryTokenRegex "[.。]|[!?！？]+"},
-             :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim.tagger"}}))
+  (->pipeline {:annotators "tokenize,ssplit,pos,depparse",
+               :depparse     {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
+               :ndepparse    {:language "chinese"},
+               :tokenize     {:language "zh"},
+               :segment      {:model                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz",
+                              :sighanCorporaDict    "edu/stanford/nlp/models/segmenter/chinese",
+                              :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
+                              :sighanPostProcessing "true"},
+               :ssplit       {:boundaryTokenRegex "[.。]|[!?！？]+"},
+               :pos          {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim.tagger"}}))
 
 (comment
   ;;; ENGLISH

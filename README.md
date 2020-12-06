@@ -37,7 +37,7 @@ Before anything can happen, we need to construct an NLP pipeline. Pipelines are 
 
 ;; Create a closure around a CoreNLP pipeline.
 (def nlp
-  (pipeline {:annotators (prerequisites ["depparse" "lemma"])}))
+  (->pipeline {:annotators ["depparse" "lemma"]}))
 ```
 
 This will create a pipeline with all of the [annotators](https://stanfordnlp.github.io/CoreNLP/annotators.html) required for dependency parsing and lemmatisation.

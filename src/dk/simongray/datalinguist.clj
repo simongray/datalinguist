@@ -3,9 +3,9 @@
   (:import [java.util Properties]
            [edu.stanford.nlp.pipeline StanfordCoreNLP]))
 
-;; Adapted from https://stackoverflow.com/questions/21768802/how-can-i-get-the-nested-keys-of-a-map-in-clojure
-(defn keys-in [m]
-  "Get the nested keys in map m."
+(defn- keys-in
+  "Get the nested keys in map `m`."
+  [m]
   (let [f (fn [[k v]]
             (let [nested-ks (filter (comp not empty?) (keys-in v))
                   append-ks (fn [path] (into [k] path))
@@ -17,39 +17,42 @@
       (vec (mapcat f m))
       [])))
 
-(defn path->str
-  "Convert a key path (e.g. from keys-in) to a flattened CoreNLP key."
+(defn- ks->str
+  "Convert `ks` (e.g. from keys-in) to a flattened CoreNLP key."
   [ks]
   (str/join "." (map name ks)))
 
-(defn flatten-map
-  "Flatten a map of nested keys."
+(defn- flatten-map
+  "Flatten a map `m` of nested keys."
   [m]
   (let [kscoll   (keys-in m)
-        flat-k+v (fn [ks] [(path->str ks) (get-in m ks)])]
+        flat-k+v (fn [ks] [(ks->str ks) (get-in m ks)])]
     (into {} (map flat-k+v kscoll))))
 
 (defn- properties
-  "Make a Properties object based on a map m."
+  "Make a Properties object based on a map `m`."
   [m]
-  (let [props (Properties.)]
-    (.putAll props (flatten-map m))
-    props))
+  (doto (Properties.)
+    (.putAll (flatten-map m))))
 
-(defn prerequisites
-  "Find the prerequisities of the given pipeline setup or single annotator."
-  ([annotators opts]
-   (let [arr   (into-array annotators)
-         props (properties opts)]
-     (StanfordCoreNLP/ensurePrerequisiteAnnotators arr props)))
-  ([x]
-   (if (string? x)
-     (prerequisites [x] {})
-     (prerequisites x {}))))
+(defn- attach-prerequisites!
+  "Attach prerequisites of `annotators` for pipeline defined in `props`."
+  [^Properties props]
+  (let [annotators (get props "annotators")]
+    (doto props
+      (.setProperty "annotators" (StanfordCoreNLP/ensurePrerequisiteAnnotators
+                                   (into-array (if (string? annotators)
+                                                 (str/split annotators #",")
+                                                 annotators))
+                                   props)))))
 
-(defn pipeline
-  "Wrap a closure around a custom CoreNLP pipeline as specified in opts.
-  The returned function will annotate text as per the specifications."
-  [opts]
-  (let [stanford-core-nlp (StanfordCoreNLP. ^Properties (properties opts))]
-    (fn [^String s] (.process stanford-core-nlp s))))
+(defn ->pipeline
+  "Wrap a closure around the CoreNLP pipeline specified in the `conf` map.
+
+  The returned function will annotate input text with the annotators specified
+  in addition to any unspecified dependency annotators."
+  [conf]
+  (let [props    (attach-prerequisites! (properties conf))
+        core-nlp (StanfordCoreNLP. ^Properties props true)]
+    (fn [^String s]
+      (.process core-nlp s))))
