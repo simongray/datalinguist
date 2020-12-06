@@ -78,10 +78,10 @@ We can also annotate another piece of text and return the lemmas:
 ;=> ("she" "have" "beat" "he" "before" ".")
 ```
 
-If at any point we grow tired of accessing Java objects using the annotation functions, we can call `data` and get plain Clojure data structures:
+If at any point we grow tired of accessing Java objects using the annotation functions, we can call `recur-datafy` and get plain Clojure data structures:
 
 ```Clojure
-(-> annotated-text tokens second data)
+(-> annotated-text tokens second recur-datafy)
 ;=>
 ;{:token-end 2,
 ; :original-text "is",

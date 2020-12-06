@@ -169,19 +169,23 @@
      :weight    (semgraph/weight edge)
      :extra?    (semgraph/extra? edge)}))
 
-(defn data
+(defn recur-datafy
   "Return a recursively datafied representation of x.
   Call at the end of an annotation chain to get plain Clojure data structures."
   [x]
-  (let [x' (datafy x)]
+  (let [x* (datafy x)]
     (cond
-      (instance? ArrayList x')
-      (mapv data x')
+      (instance? ArrayList x*)
+      (mapv recur-datafy x*)
 
-      (set? x')
-      (set (map data x'))
+      (seq? x*)
+      (mapv recur-datafy x)
 
-      (map? x')
-      (into {} (for [[k v] x'] [(data k) (data v)]))
+      (set? x*)
+      (set (map recur-datafy x*))
 
-      :else x')))
+      (map? x*)
+      (into {} (for [[k v] x*]
+                 [(recur-datafy k) (recur-datafy v)]))
+
+      :else x*)))
