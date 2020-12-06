@@ -36,7 +36,7 @@
     (.putAll (flatten-map m))))
 
 (defn- attach-prerequisites!
-  "Attach prerequisites of `annotators` for pipeline defined in `props`."
+  "Attach annotator prerequisites for pipeline defined in `props`."
   [^Properties props]
   (let [annotators (get props "annotators")]
     (doto props
