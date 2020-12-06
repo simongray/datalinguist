@@ -2,8 +2,9 @@
   (:require [clojure.reflect :refer [reflect]]
             [clojure.datafy :refer [datafy nav]]
             [dk.simongray.datalinguist :refer :all]
+            [dk.simongray.datalinguist.configs :as configs]
             [dk.simongray.datalinguist.annotations :refer :all]
-            [dk.simongray.datalinguist.semgraph :refer :all]
+            [dk.simongray.datalinguist.semgraph :as semgraph]
             [dk.simongray.datalinguist.loom.io :refer [view]])
   (:import [edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation]))
 
@@ -16,16 +17,7 @@
 ;; https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
 (defn zh-pipeline
   []
-  (->pipeline {:annotators "tokenize,ssplit,pos,depparse",
-               :depparse     {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
-               :ndepparse    {:language "chinese"},
-               :tokenize     {:language "zh"},
-               :segment      {:model                "edu/stanford/nlp/models/segmenter/chinese/ctb.gz",
-                              :sighanCorporaDict    "edu/stanford/nlp/models/segmenter/chinese",
-                              :serDictionary        "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz",
-                              :sighanPostProcessing "true"},
-               :ssplit       {:boundaryTokenRegex "[.。]|[!?！？]+"},
-               :pos          {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim.tagger"}}))
+  (->pipeline configs/chinese))
 
 (comment
   ;;; ENGLISH
