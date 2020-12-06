@@ -1,4 +1,19 @@
-(ns ^{:doc "Fns for accessing CoreNLP annotations."} dk.simongray.datalinguist.annotations
+(ns dk.simongray.datalinguist.annotations
+  "Functions for accessing CoreNLP annotations on a processed piece of text.
+
+  The functions are designed to be chained using the threading macro or through
+  function composition. Please note that *any* annotation can be accessed using
+  the basic `annotation` function, you are not limited to using the convenience
+  functions otherwise provided in this namespace.
+
+  The functions here mirror the annotation system of Stanford CoreNLP: once the
+  return value isn't an instance of TypesafeMap or a seq of TypesafeMap objects,
+  the annotation functions cannot retrieve anything from it. One example of this
+  might be `dependency-graph` which returns a SemanticGraph object.
+
+  As a general rule, functions with names that are pluralised have a seqable
+  output, e.g. `sentences` or `tokens`. This does not matter when chaining these
+  functions, as all of the annotation functions will implicitly map to seqs."
   (:require [clojure.string :as str]
             [clojure.datafy :refer [datafy]]
             [clojure.core.protocols :as p]
@@ -24,67 +39,47 @@
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation SemanticGraphEdge]))
 
-;; This namespace contains convenience functions for accessing the most common
-;; annotations of Stanford CoreNLP. The functions are designed to be chained
-;; using the ->> macro or through function composition.
-
-;; Please note that *any* annotation can be accessed using
-;; corenlp-clj.annotations/annotation, you are not just limited to using the
-;; convenience functions provided in this namespace.
-;;
-;; The functions here mirror the annotation system of Stanford CoreNLP:
-;; once the returned object isn't a TypesafeMap or a seq of TypesafeMap objects,
-;; annotation functions cannot retrieve anything from it. An example of this
-;; might be `dependency-graph` which returns a SemanticGraph object. However,
-;; using a function such as corenlp-clj.semgraph/nodes on a SemanticGraph object
-;; returns IndexedWord objects which *are* implementations of TypesafeMap.
-;; Consequently, the annotation functions can take them as params.
-;;
-;; As a general rule, functions with names that are pluralised have a seqable
-;; output, e.g. sentences or tokens. This does not matter when chaining these
-;; functions, as all annotation functions will also implicitly map to seqs.
-
 (defn annotation
-  "Access the annotation of x as specified by class.
-  x may also be a seq of objects carrying annotations."
-  [^Class class x]
+  "Access the annotation of `x` as specified by class `c`.
+  If `x` is seqable, return the annotation of each item in the seq."
+  [^Class c x]
   (if (seqable? x)
-    (map (partial annotation class) x)
-    (.get ^TypesafeMap x class)))
+    (map (partial annotation c) x)
+    (.get ^TypesafeMap x c)))
 
 (defn text
-  "The text of x (TextAnnotation)."
+  "The text of `x` (TextAnnotation)."
   [x]
   (annotation CoreAnnotations$TextAnnotation x))
 
 (defn lemma
-  "The lemma of x (LemmaAnnotation)."
+  "The lemma of `x` (LemmaAnnotation)."
   [x]
   (annotation CoreAnnotations$LemmaAnnotation x))
 
 (defn pos
-  "The part-of-speech of x (PartOfSpeechAnnotation)."
+  "The part-of-speech of `x` (PartOfSpeechAnnotation)."
   [x]
   (annotation CoreAnnotations$PartOfSpeechAnnotation x))
 
 (defn ner
-  "The named entity tag of x (NamedEntityTagAnnotation)."
+  "The named entity tag of `x` (NamedEntityTagAnnotation)."
   [x]
   (annotation CoreAnnotations$NamedEntityTagAnnotation x))
 
 (defn sentences
-  "The sentences of x (SentencesAnnotation)."
+  "The sentences of `x` (SentencesAnnotation)."
   [x]
   (annotation CoreAnnotations$SentencesAnnotation x))
 
 (defn tokens
-  "The tokens of x (TokensAnnotation)."
+  "The tokens of `x` (TokensAnnotation)."
   [x]
   (annotation CoreAnnotations$TokensAnnotation x))
 
 (defn offset
-  "The character offset of x (CharacterOffsetBeginAnnotation -or-
-  CharacterOffsetEndAnnotation). Style can be :begin (default) or :end."
+  "The character offset of `x` (CharacterOffsetBeginAnnotation -or-
+  CharacterOffsetEndAnnotation); `style` can be :begin (default) or :end."
   ([style x]
    (case style
      :begin (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
@@ -93,8 +88,8 @@
    (offset :begin x)))
 
 (defn index
-  "The index of x (IndexAnnotation -or- SentenceIndexAnnotation).
-  Style can be :token (default) or :sentence."
+  "The index of `x` (IndexAnnotation -or- SentenceIndexAnnotation);
+  `style` can be :token (default) or :sentence."
   ([style x]
    (case style
      :token (annotation CoreAnnotations$IndexAnnotation x)
@@ -103,8 +98,8 @@
    (index :token x)))
 
 (defn whitespace
-  "The whitespace around x (BeforeAnnotation -or- AfterAnnotation).
-  Style can be :before (default) or :after."
+  "The whitespace around `x` (BeforeAnnotation -or- AfterAnnotation);
+  `style` can be :before (default) or :after."
   ([style x]
    (case style
      :before (annotation CoreAnnotations$BeforeAnnotation x)
@@ -113,9 +108,9 @@
    (whitespace :before x)))
 
 (defn dependency-graph
-  "The dependency graph of x (BasicDependenciesAnnotation -or-
-  EnhancedDependenciesAnnotation -or- EnhancedPlusPlusDependenciesAnnotation).
-  Style can be :basic, :enhanced or :enhanced++ (default)."
+  "The dependency graph of `x` (BasicDependenciesAnnotation -or-
+  EnhancedDependenciesAnnotation -or- EnhancedPlusPlusDependenciesAnnotation);
+  `style` can be :basic, :enhanced or :enhanced++ (default)."
   ([style x]
    (case style
      :basic (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
@@ -125,7 +120,7 @@
    (dependency-graph :enhanced++ x)))
 
 (defn- class->k
-  "Convert a Java class name into an (occasionally namespaced) keyword.
+  "Convert a Java class `c` into an (occasionally namespaced) keyword.
 
    (helper fn for datafy-tsm)"
   [^Class c]
@@ -143,7 +138,7 @@
       (keyword)))
 
 (defn- datafy-tsm
-  "Produce a map of the annotations of a TypesafeMap."
+  "Produce a map of the annotations of a TypesafeMap `tsm`."
   [^TypesafeMap tsm]
   (->> (.keySet ^TypesafeMap tsm)
        (map #(vector (class->k %) (annotation % tsm)))
@@ -170,7 +165,7 @@
      :extra?    (semgraph/extra? edge)}))
 
 (defn recur-datafy
-  "Return a recursively datafied representation of x.
+  "Return a recursively datafied representation of `x`.
   Call at the end of an annotation chain to get plain Clojure data structures."
   [x]
   (let [x* (datafy x)]
