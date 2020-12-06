@@ -2,9 +2,9 @@
  :deps    {org.clojure/clojure               {:mvn/version "1.10.1"}
            aysylu/loom                       {:mvn/version "1.0.2"}
            camel-snake-kebab                 {:mvn/version "0.4.2"}
-           edu.stanford.nlp/stanford-corenlp {:mvn/version "4.0.0"}}
- :aliases {:dev       {:extra-deps  {edu.stanford.nlp/stanford-corenlp$models         {:mvn/version "4.0.0"}
-                                     edu.stanford.nlp/stanford-corenlp$models-chinese {:mvn/version "4.0.0"}}
+           edu.stanford.nlp/stanford-corenlp {:mvn/version "4.2.0"}}
+ :aliases {:dev       {:extra-deps  {edu.stanford.nlp/stanford-corenlp$models         {:mvn/version "4.2.0"}
+                                     edu.stanford.nlp/stanford-corenlp$models-chinese {:mvn/version "4.2.0"}}
                        :extra-paths ["dev/src"]
                        :jvm-opts    ["-Xmx4G"]}
            :rebl      {:extra-deps {com.cognitect/rebl          {:mvn/version "0.9.242"}

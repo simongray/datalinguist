@@ -8,21 +8,21 @@ In addition to adding DataLinguist itself as a project dependency, you should th
 
 ```edn
 ;; Currently available precompiled language models in deps.edn format
-edu.stanford.nlp/stanford-corenlp$models             {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-arabic      {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-chinese     {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-english     {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-english-kbp {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-french      {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-german      {:mvn/version "4.0.0"}
-edu.stanford.nlp/stanford-corenlp$models-spanish     {:mvn/version "4.0.0"}
+edu.stanford.nlp/stanford-corenlp$models             {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-arabic      {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-chinese     {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-english     {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-english-kbp {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-french      {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-german      {:mvn/version "4.2.0"}
+edu.stanford.nlp/stanford-corenlp$models-spanish     {:mvn/version "4.2.0"}
 ```
 
 _Note that several [unofficial language models](https://stanfordnlp.github.io/CoreNLP/human-languages.html#models-for-other-languages) also exist!_
 
-You will likely also need to increase the amount of memory alloted to your JVM process, e.g. for Chinese I make sure to add `:jvm-opts ["-Xmx4G"]` to my _deps.edn_ file.
+You will likely also need to increase the amount of memory allotted to your JVM process, e.g. for Chinese I make sure to add `:jvm-opts ["-Xmx4G"]` to my _deps.edn_ file.
 
-> _<a name="maven"><sup>†</sup></a> Stanford can sometimes be bit slow when it comes to uploading more recent versions of CoreNLP to Maven Central. At the time of writing, 4.1 had been available on Stanford's own site for several months, while Maven still only had version 4.0 available!_
+> _<a name="maven"><sup>†</sup></a> Stanford can sometimes be bit slow when it comes to uploading more recent versions of CoreNLP to Maven Central._
 
 ## How to use
 DataLinguist has a very simple API for executing various NLP operations.
