@@ -1,6 +1,8 @@
 (ns dk.simongray.datalinguist.configs
-  "Pipeline configurations for various languages. Need when deviating from the
-  default configuration for English or when annotating with another language.")
+  "Example pipeline configurations for various languages.
+
+  Configurations like these are needed when deviating from the default
+  configuration for English or when annotating with another language.")
 
 ;; Adapted from configuration previously found on this page (now missing):
 ;;   https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
