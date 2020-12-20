@@ -180,6 +180,16 @@
   (let [^Pair pair (.yieldSpan g vertex)]
     [(.first pair) (.second pair)]))
 
+(defn path
+  "The shortest path `from` vertex and `to` vertex in dependency graph `g`;
+  `style` can optionally be :directed (default) or :undirected."
+  ([style ^SemanticGraph g ^IndexedWord from ^IndexedWord to]
+   (case style
+     :directed (.getShortestDirectedPathNodes g from to)
+     :undirected (.getShortestUndirectedPathNodes g from to)))
+  ([^SemanticGraph g ^IndexedWord from ^IndexedWord to]
+   (path :directed g from to)))
+
 (defn path-to-root
   "Find the path from the given `vertex` to the root of dependency graph `g`."
   [^SemanticGraph g ^IndexedWord vertex]
