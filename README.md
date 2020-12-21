@@ -1,8 +1,33 @@
 # DataLinguist
-DataLinguist is a Clojure wrapper for the Natural Language Processing behemoth, [Stanford CoreNLP](https://github.com/stanfordnlp/CoreNLP). The goal of the project is to support an NLP workflow in a data-oriented style, integrating relevant Clojure protocols and libraries.
+DataLinguist<sup>[†](#name)</sup> is a Clojure wrapper for the Natural Language Processing behemoth, [Stanford CoreNLP](https://github.com/stanfordnlp/CoreNLP). The goal of the project is to support an NLP workflow in a data-oriented style, integrating relevant Clojure protocols and libraries.
 
-## Installation
-DataLinguist requires a language model to access the full feature set. Several precompiled models are available through Maven Central<sup>[†](#maven)</sup>. These models follow the same versioning scheme as CoreNLP itself. See the official [CoreNLP documentation](https://stanfordnlp.github.io/CoreNLP/download.html) for more on language models.
+Most Lisp dialects facilitate interactive development centred around a REPL. Clojure - being both a JVM language and a data-oriented one - is perfectly suited for wrapping Stanford CoreNLP's fairly opaque language processing tools. The dizzying heights of Java class hierarchies are brought down to eye level and repackaged into more accessible functions inside a few Clojure namespaces. At the same time, the API is streamlined with most of the obvious cruft left out.
+
+* [Setup](#setup)
+  - [Language models](#language-models)
+* [How to use](#how-to-use)
+  1. [Building an annotation pipeline](#1-building-an-annotation-pipeline)
+  2. [Using the pipeline to annotate text](#2-using-the-pipeline-to-annotate-text)
+  3. [Extracting annotations using the annotation functions](#3-extracting-annotations-using-the-annotation-functions)
+* [Clojure integration](#clojure-integration)
+  - [View in the REBL](#view-in-the-rebl)
+  - [Loom integration](#loom-integration)
+* [State of the wrap](#state-of-the-wrap)
+
+> _<a name="name"><sup>†</sup></a> The name is a play on "datalingvist" - the Danish word for "computational linguist" - and Clojure's love of all things data. As a sidenote, the Danish translation of "computer scientist" is actually "datalog"!_
+
+## Setup
+The library can be included as a `deps.edn` dependency by referencing a specific commit SHA in this repository:
+
+```edn
+simongray/datalinguist {:git/url "https://github.com/simongray/datalinguist"
+                        :sha     "..."}}
+```
+
+TODO: put the library on clojars, add a short description
+
+### Language models
+DataLinguist requires a language model to access the full feature set. Several precompiled models are available through Maven Central<sup>[††](#maven)</sup>. These models follow the same versioning scheme as CoreNLP itself. See the official [CoreNLP documentation](https://stanfordnlp.github.io/CoreNLP/download.html) for more on language models.
 
 In addition to adding DataLinguist itself as a project dependency, you should therefore _also_ make sure to add any language models you might need:
 
@@ -22,10 +47,10 @@ _Note that several [unofficial language models](https://stanfordnlp.github.io/Co
 
 You will likely also need to increase the amount of memory allotted to your JVM process, e.g. for Chinese I make sure to add `:jvm-opts ["-Xmx4G"]` to my _deps.edn_ file.
 
-> _<a name="maven"><sup>†</sup></a> Stanford can sometimes be bit slow when it comes to uploading more recent versions of CoreNLP to Maven Central._
+> _<a name="maven"><sup>††</sup></a> Stanford can sometimes be bit slow when it comes to uploading more recent versions of CoreNLP to Maven Central._
 
 ## How to use
-DataLinguist has a very simple API for executing various NLP operations.
+DataLinguist has a very simple API for executing various NLP operations. To perform any language processing task you will generally need to **1.** build an annotation pipeline, **2.** annotate some text, and then **3.** extract some of these annotations for analysis.
 
 ### 1. Building an annotation pipeline
 Before anything can happen, we need to construct an NLP pipeline. Pipelines are built using plain Clojure data structures which are converted into
@@ -99,14 +124,17 @@ If at any point we grow tired of accessing Java objects using the annotation fun
 ; :text "is"}
 ```
 
-## View in the REBL
+## Clojure integration
+Apart from wrapping the features of Stanford CoreNLP, DataLinguist also integrates with common Clojure libraries and workflows. 
+
+### View in the REBL
 The pipeline's annotated output data extends the `Datafiable` protocol introduced in Clojure 1.10 and can therefore be navigated using the [REBL](https://github.com/cognitect-labs/REBL-distro).
  
 ![Navigating annotations in the REBL](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/rebl_example.png)
 
 Within the REBL, text annotations can be visualised and analysed interactively.
 
-## Loom integration
+### Loom integration
 The dependency graphs support the `Graph` and `DiGraph` protocols from [Loom](https://github.com/aysylu/loom) and associated algorithms.
 
 Dependency graphs can also be visualised using a modified version of the view function from Loom (requires Graphiz installed).
@@ -122,3 +150,10 @@ Dependency graphs can also be visualised using a modified version of the view fu
 ```
 
 ![Dependency graph visualised using Graphviz](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png)
+
+## State of the wrap
+You can already perform most common NLP tasks by following the 3-part process [described above](#how-to-use). However, CoreNLP is a huge undertaking that has amassed many NLP tools throughout the years, usually by integrating the products of various Stanford research projects. Some of these tools are well maintained, some not so much. Some play well with the other parts of CoreNLP, some do not. It is the goal of this project to wrap most of them, with a few exceptions:
+
+1. Classes and methods that are merely implementation details are not wrapped.
+2. Mutating code has generally been left out. This is not idiomatic in Clojure.
+3. Easily replicated convenience methods have been left out. The Clojure standard library is better suited for this.
