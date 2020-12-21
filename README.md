@@ -12,7 +12,7 @@ Most Lisp dialects facilitate interactive development centred around a REPL. Clo
 * [Clojure integration](#clojure-integration)
   - [View in the REBL](#view-in-the-rebl)
   - [Loom integration](#loom-integration)
-* [State of the wrap](#state-of-the-wrap)
+* [Wrapper state](#wrapper-state)
 
 > _<a name="name"><sup>†</sup></a> The name is a play on "datalingvist" - the Danish word for "computational linguist" - and Clojure's love of all things data. As a sidenote, the Danish translation of "computer scientist" is actually "datalog"!_
 
@@ -151,9 +151,12 @@ Dependency graphs can also be visualised using a modified version of the view fu
 
 ![Dependency graph visualised using Graphviz](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png)
 
-## State of the wrap
+## Wrapper state
 You can already perform most common NLP tasks by following the 3-part process [described above](#how-to-use). However, CoreNLP is a huge undertaking that has amassed many NLP tools throughout the years, usually by integrating the products of various Stanford research projects. Some of these tools are well maintained, some not so much. Some play well with the other parts of CoreNLP, some do not. It is the goal of this project to wrap most of them, with a few exceptions:
 
 1. Classes and methods that are merely implementation details are not wrapped.
 2. Mutating code has generally been left out. This is not idiomatic in Clojure.
 3. Easily replicated convenience methods have been left out. The Clojure standard library is better suited for this.
+4. Code dealing with training new language models has been left out. For now, DataLinguist is focused on wrapping the language analysis functionality.
+
+Please refer to [this overview](https://github.com/simongray/datalinguist/blob/master/doc/CoreNLP_packages.md) for more on the CoreNLP package structure and what's been wrapped in DataLinguist.
