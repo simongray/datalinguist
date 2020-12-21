@@ -21,11 +21,11 @@
   Additionally, any mutating functions have deliberately not been wrapped!"
   (:require [clojure.string :as str]
             [loom.graph :refer [Graph Digraph Edge]]
-            [loom.attr :refer [AttrGraph]])                 ; TODO: why is this here?)
+            [loom.attr :refer [AttrGraph]]                  ; TODO: why is this here?)
+            [dk.simongray.datalinguist.static :as static])
   (:refer-clojure :exclude [parents descendants])
   (:import [java.util Collection]
-           [edu.stanford.nlp.ling IndexedWord
-                                  CoreLabel$OutputFormat]
+           [edu.stanford.nlp.ling IndexedWord]
            [edu.stanford.nlp.util Pair]
            [edu.stanford.nlp.trees TypedDependency
                                    GrammaticalRelation]
@@ -219,22 +219,6 @@
   [^SemanticGraph g]
   (SemanticGraphUtils/isTree g))
 
-;; From the CoreLabel class - may move somewhere else in the future.
-;; As per the messy conventions of Stanford CoreNLP, word = value.
-(def corelabel-formats
-  {:all             CoreLabel$OutputFormat/ALL
-   :lemma-index     CoreLabel$OutputFormat/LEMMA_INDEX
-   :map             CoreLabel$OutputFormat/MAP
-   :value           CoreLabel$OutputFormat/VALUE
-   :value-index     CoreLabel$OutputFormat/VALUE_INDEX
-   :value-index-map CoreLabel$OutputFormat/VALUE_INDEX_MAP
-   :value-map       CoreLabel$OutputFormat/VALUE_MAP
-   :value-tag       CoreLabel$OutputFormat/VALUE_TAG
-   :value-tag-index CoreLabel$OutputFormat/VALUE_TAG_INDEX
-   :value-tag-ner   CoreLabel$OutputFormat/VALUE_TAG_NER
-   :word            CoreLabel$OutputFormat/WORD
-   :word-index      CoreLabel$OutputFormat/WORD_INDEX})
-
 (defn formatted-string
   "Format dependency graph `g`, optionally according to a specified `style`.
 
@@ -254,7 +238,7 @@
        :pos (.toPOSList g)
        :compact (.toCompactString g)
        :compact-pos (.toCompactString g true)
-       :dot (.toDotFormat g graph-name (corelabel-formats label-format))
+       :dot (.toDotFormat g graph-name (static/corelabel-formats label-format))
        :default (.toFormattedString g))
      (.toFormattedString g ^SemanticGraphFormatter style))))
 

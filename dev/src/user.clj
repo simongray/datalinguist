@@ -17,7 +17,7 @@
 ;; https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
 (defn zh-pipeline
   []
-  (->pipeline configs/chinese))
+  (->pipeline (:chinese static/configs)))
 
 (comment
   ;;; ENGLISH
