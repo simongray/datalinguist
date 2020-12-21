@@ -1,12 +1,15 @@
-(ns ^{:doc "Fns dealing with semgrex in CoreNLP"} dk.simongray.datalinguist.semgraph.semgrex
+(ns dk.simongray.datalinguist.semgraph.semgrex
+  "Functions dealing with semgrex in CoreNLP.
+
+  The `se-pattern`, `se-matcher`, `se-find`, and `se-seq` functions all mimic
+  existing Clojure regex functions.
+
+  The other functions prepended with se- deal with extracting named nodes and
+  relations from matches. Matches are of type IndexedWord. Underlying data can
+  be obtained using the functions in `dk.simongray.datalinguist.annotations`."
   (:import [edu.stanford.nlp.semgraph SemanticGraph]
            [edu.stanford.nlp.semgraph.semgrex SemgrexPattern
                                               SemgrexMatcher]))
-
-;; Se-pattern, se-matcher, se-find, and se-seq mimic Clojure regex functions.
-;; The other functions prepended with "se-" deal with extracting named nodes and
-;; relations from matches. Matches are of type IndexedWord. Underlying data can
-;; be obtained using the functions in `computere.annotations`.
 
 (defn se-pattern
   "Return an instance of SemgrexPattern, for use, e.g. in se-matcher."
@@ -14,7 +17,7 @@
   (SemgrexPattern/compile s))
 
 (defn se-matcher
-  "Return an instance of SemgrexMatcher, for use, e.g. in se-find."
+  "Create a SemgrexMatcher from `s` and dependency graph `g`; use in se-find."
   [^SemgrexPattern p ^SemanticGraph g]
   (.matcher p g))
 
@@ -25,8 +28,8 @@
   (when (.findNextMatchingNode m) (.getMatch m)))
 
 (defn se-seq
-  "Return a list of all unique matches of SemgrexPattern in SemanticGraph
-  (note: not lazy)."
+  "Return a list of unique matches of SemgrexPattern `p` in SemanticGraph `g`.
+  Note: not lazy."
   [^SemgrexPattern p ^SemanticGraph g]
   (let [^SemgrexMatcher m (se-matcher p g)]
     (loop [matches ()]
@@ -66,7 +69,7 @@
 
 (defn se-seq-full
   "Return vectors of semgrex match, matching named nodes, and matching named
-  relations for all matches."
+  relations for all matches based on a pattern `p` and dependency graph `g`."
   [^SemgrexPattern p ^SemanticGraph g]
   (let [^SemgrexMatcher m (se-matcher p g)]
     (loop [matches ()]
