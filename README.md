@@ -58,7 +58,7 @@ Before anything can happen, we need to construct an NLP pipeline. Pipelines are 
 
 ```Clojure
 (require '[dk.simongray.datalinguist :refer :all]
-         '[dk.simongray.datalinguist.annotations :refer :all])
+         '[dk.simongray.datalinguist.annotation :refer :all])
 
 ;; Create a closure around a CoreNLP pipeline.
 (def nlp

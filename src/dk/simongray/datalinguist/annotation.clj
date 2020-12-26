@@ -1,4 +1,4 @@
-(ns dk.simongray.datalinguist.annotations
+(ns dk.simongray.datalinguist.annotation
   "Functions for accessing CoreNLP annotations on a processed piece of text.
 
   The functions are designed to be chained using the threading macro or through
