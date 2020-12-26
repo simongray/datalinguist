@@ -160,3 +160,10 @@ You can already perform most common NLP tasks by following the 3-part process [d
 4. Code dealing with training new language models has been left out. For now, DataLinguist is focused on wrapping the language analysis functionality.
 
 Please refer to [this overview](https://github.com/simongray/datalinguist/blob/master/doc/CoreNLP_packages.md) for more on the CoreNLP package structure and what's been wrapped in DataLinguist.
+
+## Licence
+DataLinguist is [licensed under the GPL v3 or later](https://github.com/simongray/datalinguist/blob/master/LICENCE). This copy-left licence is a continuation of [Stanford's own licensing terms for CoreNLP](https://stanfordnlp.github.io/CoreNLP/#license):
+
+> The full Stanford CoreNLP is licensed under the GNU General Public License v3 or later. More precisely, all the Stanford NLP code is GPL v2+, but CoreNLP uses some Apache-licensed libraries, and so our understanding is that the the composite is correctly licensed as v3+. You can run almost all of CoreNLP under GPL v2; you simply need to omit the time-related libraries, and then you lose the functionality of SUTime. Note that the license is the full GPL, which allows many free uses, but not its use in proprietary software which is distributed to others.
+
+Since CoreNLP is an academic project, you should also [cite Stanford](https://stanfordnlp.github.io/CoreNLP/#citing-stanford-corenlp-in-papers) when using the software. Additionally, you are encouraged to reference DataLinguist and provide a link to the [simongray/DataLinguist](https://github.com/simongray/datalinguist) Git repository.
