@@ -55,23 +55,23 @@
 
 (deftest test-named-entity-recognition
   (testing :tag
-    (let [actual1  (-> example tokens ner)
-          actual2  (->> example tokens (ner :tag))
+    (let [actual1  (-> example tokens named-entity)
+          actual2  (->> example tokens (named-entity :tag))
           expected ["O" "O" "O" "COUNTRY" "O" "PERSON" "O" "O" "O" "O" "O" "CITY" "O"]]
       (is (= actual1 actual2 expected))))
 
   (testing :fine
-    (let [actual   (->> example tokens (ner :fine))
+    (let [actual   (->> example tokens (named-entity :fine))
           expected ["O" "O" "O" "COUNTRY" "O" "PERSON" "O" "O" "O" "O" "O" "CITY" "O"]]
       (is (= actual expected))))
 
   (testing :coarse
-    (let [actual   (->> example tokens (ner :coarse))
+    (let [actual   (->> example tokens (named-entity :coarse))
           expected ["O" "O" "O" "LOCATION" "O" "PERSON" "O" "O" "O" "O" "O" "LOCATION" "O"]]
       (is (= actual expected))))
 
   (testing :probs
-    (let [actual   (->> example tokens (ner :probs))
+    (let [actual   (->> example tokens (named-entity :probs))
           expected ["O" "O" "O" "LOCATION" "O" "PERSON" "O" "O" "O" "O" "O" "LOCATION" "O"]]
       (is (= (map first actual) expected)))))
 
@@ -107,3 +107,8 @@
                           (numeric :normalized))
             expected [nil nil nil nil nil "P1W" "P1W" nil "1.0" nil nil]]
         (is (= actual expected))))))
+
+(deftest test-mentions
+  (let [actual   (-> example mentions text)
+        expected ["Sweden" "Mary" "Ystad"]]
+    (is (= actual expected))))

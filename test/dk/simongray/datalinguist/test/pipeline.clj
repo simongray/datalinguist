@@ -5,6 +5,7 @@
 (def en
   (delay (dl/->pipeline {:annotators ["truecase"            ; TrueCaseAnnotation
                                       "quote"               ; QuotationsAnnotation
+                                      "entitymentions"      ; MentionsAnnotation
                                       "depparse"
                                       "lemma"
                                       "ner"]

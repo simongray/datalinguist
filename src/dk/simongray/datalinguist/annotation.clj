@@ -47,7 +47,8 @@
                                   CoreAnnotations$NumericValueAnnotation
                                   CoreAnnotations$NumericCompositeValueAnnotation
                                   CoreAnnotations$NumericCompositeTypeAnnotation
-                                  CoreAnnotations$NumericCompositeObjectAnnotation]
+                                  CoreAnnotations$NumericCompositeObjectAnnotation
+                                  CoreAnnotations$MentionsAnnotation]
            [edu.stanford.nlp.semgraph SemanticGraph
                                       SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
@@ -103,7 +104,7 @@
   (annotation CoreAnnotations$PartOfSpeechAnnotation x))
 
 ;; StackedNamedEntityTagAnnotation not included - seems to be internal use only
-(defn ner
+(defn named-entity
   "The named entity tag of `x`; `style` can be :probs, :coarse, :fine, or
   :tag (default)."
   {:annotations #{CoreAnnotations$NamedEntityTagAnnotation
@@ -120,7 +121,7 @@
                      [k v]))
                  (annotation CoreAnnotations$NamedEntityTagProbsAnnotation x))))
   ([x]
-   (ner :tag x)))
+   (named-entity :tag x)))
 
 ;; TODO: what sets a CoreAnnotations$NumericCompositeObjectAnnotation??
 (defn numeric
@@ -142,6 +143,12 @@
      :normalized (annotation CoreAnnotations$NormalizedNamedEntityTagAnnotation x)))
   ([x]
    (numeric :value x)))
+
+(defn mentions
+  "The named entity mentions of `x`."
+  {:annotations #{CoreAnnotations$MentionsAnnotation}}
+  [x]
+  (annotation CoreAnnotations$MentionsAnnotation x))
 
 (defn sentences
   "The sentences of `x`."

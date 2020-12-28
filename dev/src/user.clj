@@ -44,7 +44,7 @@
   (->> "Anna went travelling in China."
        nlp
        tokens
-       ner)
+       named-entity)
   ;=> ("PERSON" "O" "O" "O" "LOCATION" "O")
 
   ;; lemmatisation
