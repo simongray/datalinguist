@@ -205,18 +205,20 @@
    (dependency-graph :enhanced++ x)))
 
 (defn- class->k
-  "Convert a Java class `c` into an (occasionally namespaced) keyword.
-
-   (helper fn for datafy-tsm)"
+  "Convert a Java class `c` into an occasionally namespaced keyword."
   [^Class c]
   (-> (str c)
       (subs 6)                                              ; remove "class "
       (str/split #"\.|\$")
       (->> (filter (partial re-find #"Annotation"))
+           (map #(str/replace % #"CoreAnnotation[s]?" ""))  ; removing only "Core" interferes with words like Coref
            (map #(str/replace % #"Annotation[s]?" ""))
-           (map #(str/replace % #"Core" ""))
            (remove empty?)
            (map csk/->kebab-case)
+           ((fn [[c k :as parts]]
+              (if (and k (str/starts-with? k c))
+                [c (subs k (inc (count c)))]                ; remove repeated "prefix-"
+                parts)))
            (interpose "/")
            (str/join))
       (str/replace #"^is-(.+)" #(str (second %) "?"))
@@ -226,7 +228,7 @@
   "Produce a map of the annotations of a TypesafeMap `tsm`."
   [^TypesafeMap tsm]
   (->> (.keySet ^TypesafeMap tsm)
-       (map #(vector (class->k %) (annotation % tsm)))
+       (map (juxt class->k #(annotation % tsm)))
        (reduce (fn [m [k v]]
                  (assoc m k (datafy v)))
                {})))
