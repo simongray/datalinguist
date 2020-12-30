@@ -60,7 +60,8 @@ Before anything can happen, we need to construct an NLP pipeline. Pipelines are 
 (require '[dk.simongray.datalinguist :refer :all])
 
 ;; Create a closure around a CoreNLP pipeline.
-(def nlp
+;; By default, a CoreNLP pipeline annotates text in the English language.
+(def en
   (->pipeline {:annotators ["depparse" "lemma"]}))
 ```
 
@@ -71,7 +72,7 @@ If the resulting pipeline function is called on a piece of text it will output a
 
 ```Clojure
 (def annotated-text
-  (nlp "This is a piece of text. This is another one."))
+  (en "This is a piece of text. This is another one."))
 ```
 
 This data consists of various Java objects and takes the shape of a tree. The data can then be queried using the annotation functions.
@@ -95,10 +96,16 @@ In our example we built a pipeline that could do both dependency parsing and lem
 We can also annotate another piece of text and return the lemmas:
 
 ```Clojure
-(->> "She has beaten him before."
-     nlp
+(->> (en "She has beaten him before.")
      tokens
      lemma)
+;=> ("she" "have" "beat" "he" "before" ".")
+```
+
+While lemmas are technically only attached to _tokens_ in CoreNLP (and dependency graphs to sentences), the DataLinguist functions do allow you to skip ahead in most cases, e.g.
+
+```clojure
+(lemma (en "She has beaten him before."))
 ;=> ("she" "have" "beat" "he" "before" ".")
 ```
 
@@ -141,8 +148,7 @@ Dependency graphs can also be visualised using a modified version of the view fu
 ```Clojure
 (require '[dk.simongray.datalinguist.loom.io :refer [view]])
 
-(view (->> "The dependencies of this sentence have been visualised using Graphviz."
-           nlp
+(view (->> (en "The dependencies of this sentence have been visualised using Graphviz.")
            sentences
            dependency-graph
            first))
