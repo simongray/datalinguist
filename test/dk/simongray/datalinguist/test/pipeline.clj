@@ -6,6 +6,7 @@
   (delay (dl/->pipeline {:annotators ["truecase"            ; TrueCaseAnnotation
                                       "quote"               ; QuotationsAnnotation
                                       "entitymentions"      ; MentionsAnnotation
+                                      "parse"               ; TreeAnnotation
                                       "depparse"
                                       "lemma"
                                       ;; TODO: issue #4 - kbp doesn't work

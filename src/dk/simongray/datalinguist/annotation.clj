@@ -53,7 +53,10 @@
            [edu.stanford.nlp.semgraph SemanticGraph
                                       SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation SemanticGraphEdge]))
+                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation SemanticGraphEdge]
+           [edu.stanford.nlp.trees TreeCoreAnnotations$TreeAnnotation
+                                   TreeCoreAnnotations$BinarizedTreeAnnotation
+                                   TreeCoreAnnotations$KBestTreesAnnotation]))
 
 (defn annotation
   "Access the annotation of `x` as specified by class `c`.
@@ -205,8 +208,22 @@
   ([x]
    (whitespace :before x)))
 
+;; TODO: add unit tests
+;; TODO: wrap Tree class and other parts of trees package
+;; TODO: datafy support
+(defn constituency-tree
+  "The constituency tree of `x`; `style` can be :kbest-trees, :binarized, or
+  :standard (default)."
+  ([style x]
+   (case style
+     :standard (annotation TreeCoreAnnotations$TreeAnnotation x)
+     :binarized (annotation TreeCoreAnnotations$BinarizedTreeAnnotation x)
+     :kbest-trees (annotation TreeCoreAnnotations$KBestTreesAnnotation x)))
+  ([x]
+   (constituency-tree :standard x)))
+
 (defn dependency-graph
-  "The dependency graph of `x`; `style` can be :basic, :enhanced or :enhanced++
+  "The dependency graph of `x`; `style` can be :basic, :enhanced, or :enhanced++
   (default)."
   {:annotations #{SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                   SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
