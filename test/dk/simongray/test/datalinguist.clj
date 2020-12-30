@@ -1,7 +1,7 @@
-(ns dk.simongray.datalinguist.test.annotation
+(ns dk.simongray.test.datalinguist
   (:require [clojure.test :refer :all]
-            [dk.simongray.datalinguist.test.pipeline :as pipeline]
-            [dk.simongray.datalinguist.annotation :refer :all]))
+            [dk.simongray.test.datalinguist.pipeline :as pipeline]
+            [dk.simongray.datalinguist :refer :all]))
 
 (def example
   (@pipeline/en "I flew to Sweden with Mary to attend a conference in Ystad."))

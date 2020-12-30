@@ -3,7 +3,6 @@
             [clojure.datafy :refer [datafy nav]]
             [dk.simongray.datalinguist :refer :all]
             [dk.simongray.datalinguist.static :as static]
-            [dk.simongray.datalinguist.annotation :refer :all]
             [dk.simongray.datalinguist.semgraph :as semgraph]
             [dk.simongray.datalinguist.loom.io :refer [view]])
   (:import [edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation]))

@@ -1,4 +1,4 @@
-(ns dk.simongray.datalinguist.test.pipeline
+(ns dk.simongray.test.datalinguist.pipeline
   (:require [clojure.test :refer :all]
             [dk.simongray.datalinguist :as dl]))
 

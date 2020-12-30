@@ -57,8 +57,7 @@ Before anything can happen, we need to construct an NLP pipeline. Pipelines are 
 [properties](https://github.com/stanfordnlp/CoreNLP/blob/master/src/edu/stanford/nlp/pipeline/StanfordCoreNLP.properties):
 
 ```Clojure
-(require '[dk.simongray.datalinguist :refer :all]
-         '[dk.simongray.datalinguist.annotation :refer :all])
+(require '[dk.simongray.datalinguist :refer :all])
 
 ;; Create a closure around a CoreNLP pipeline.
 (def nlp
