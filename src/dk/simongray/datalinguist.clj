@@ -260,7 +260,7 @@
            (remove empty?)
            (map csk/->kebab-case)
            ((fn [[c k :as parts]]
-              (if (and k (str/starts-with? k c))
+              (if (and k (str/starts-with? k c) (not= c k))
                 [c (subs k (inc (count c)))]                ; remove repeated "prefix-"
                 parts)))
            (interpose "/")
