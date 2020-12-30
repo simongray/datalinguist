@@ -8,5 +8,7 @@
                                       "entitymentions"      ; MentionsAnnotation
                                       "depparse"
                                       "lemma"
+                                      ;; TODO: issue #4 - kbp doesn't work
+                                      ;"kbp"                 ; KBPTriplesAnnotation
                                       "ner"]
                          :quote      {:extractUnclosedQuotes "true"}})))

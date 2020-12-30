@@ -48,7 +48,8 @@
                                   CoreAnnotations$NumericCompositeValueAnnotation
                                   CoreAnnotations$NumericCompositeTypeAnnotation
                                   CoreAnnotations$NumericCompositeObjectAnnotation
-                                  CoreAnnotations$MentionsAnnotation]
+                                  CoreAnnotations$MentionsAnnotation
+                                  CoreAnnotations$KBPTriplesAnnotation]
            [edu.stanford.nlp.semgraph SemanticGraph
                                       SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
@@ -161,6 +162,13 @@
   {:annotations #{CoreAnnotations$TokensAnnotation}}
   [x]
   (annotation CoreAnnotations$TokensAnnotation x))
+
+;; TODO: issue #4 - kpb annotator doesn't work
+(defn triples
+  "The KPB triples of `x`."
+  {:annotations #{CoreAnnotations$TokensAnnotation}}
+  [x]
+  (annotation CoreAnnotations$KBPTriplesAnnotation x))
 
 (defn offset
   "The character offset of `x`; `style` can be :end or :begin (default)."
