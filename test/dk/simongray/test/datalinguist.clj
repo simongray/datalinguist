@@ -1,13 +1,24 @@
 (ns dk.simongray.test.datalinguist
   (:require [clojure.test :refer :all]
-            [dk.simongray.test.datalinguist.pipeline :as pipeline]
             [dk.simongray.datalinguist :refer :all]))
 
+(def en-nlp
+  (delay (->pipeline {:annotators ["truecase"            ; TrueCaseAnnotation
+                                   "quote"               ; QuotationsAnnotation
+                                   "entitymentions"      ; MentionsAnnotation
+                                   "parse"               ; TreeAnnotation
+                                   "depparse"
+                                   "lemma"
+                                   ;; TODO: issue #4 - kbp doesn't work
+                                   ;"kbp"                 ; KBPTriplesAnnotation
+                                   "ner"]
+                      :quote      {:extractUnclosedQuotes "true"}})))
+
 (def sweden-example
-  (@pipeline/en "I flew to Sweden with Mary to attend a conference in Ystad."))
+  (@en-nlp "I flew to Sweden with Mary to attend a conference in Ystad."))
 
 (def sweden-example-lc
-  (@pipeline/en "i flew to sweden with mary to attend a conference in ystad."))
+  (@en-nlp "i flew to sweden with mary to attend a conference in ystad."))
 
 (deftest test-text
   (testing :plain
@@ -33,14 +44,14 @@
 
 (deftest test-quotations
   (testing :closed
-    (let [example  (@pipeline/en "He said: \"never\".")
+    (let [example  (@en-nlp "He said: \"never\".")
           actual1  (-> example quotations text)
           actual2  (->> example (quotations :closed) text)
           expected ["\"never\""]]
       (is (= actual1 actual2 expected))))
 
   (testing :unclosed
-    (let [example  (@pipeline/en "He said: \"never.")
+    (let [example  (@en-nlp "He said: \"never.")
           actual   (->> example (quotations :unclosed) text)
           expected ["\"never."]]
       (is (= actual expected)))))
@@ -49,7 +60,7 @@
 (deftest test-index
   ;; The :quote index just IDs the quotations in order (from 0).
   (testing :quote
-    (let [example   (@pipeline/en "He said \"marry me\"; she said: \"ok.\"")
+    (let [example   (@en-nlp "He said \"marry me\"; she said: \"ok.\"")
           actual1   (->> example quotations (index :quote))
           actual2   (index :quote example)
           expected1 [0 1]
@@ -92,7 +103,7 @@
       (is (= (map first actual1) (map first actual2) expected)))))
 
 (deftest test-numeric
-  (let [example (@pipeline/en "It was his twenty first time.")]
+  (let [example (@en-nlp "It was his twenty first time.")]
     (testing :value
       (let [actual1  (-> example tokens numeric)
             actual2  (->> example tokens (numeric :value))
@@ -122,7 +133,7 @@
         (is (= actual1 actual2 expected))))
 
     (testing :normalized
-      (let [example  (@pipeline/en "He went to Sweden for a week the first time.")
+      (let [example  (@en-nlp "He went to Sweden for a week the first time.")
             actual1  (->> example tokens (numeric :normalized))
             actual2  (numeric :normalized example)
             expected [nil nil nil nil nil "P1W" "P1W" nil "1.0" nil nil]]
