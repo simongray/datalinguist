@@ -3,12 +3,14 @@
             [dk.simongray.datalinguist :refer :all]))
 
 (def en-nlp
-  (delay (->pipeline {:annotators ["truecase"            ; TrueCaseAnnotation
-                                   "quote"               ; QuotationsAnnotation
-                                   "entitymentions"      ; MentionsAnnotation
-                                   "parse"               ; TreeAnnotation
+  (delay (->pipeline {:annotators ["truecase"               ; TrueCaseAnnotation
+                                   "quote"                  ; QuotationsAnnotation
+                                   "entitymentions"         ; MentionsAnnotation
+                                   "parse"                  ; TreeAnnotation
                                    "depparse"
                                    "lemma"
+                                   "coref"                  ; required by "quote"
+                                   "openie"                 ; RelationTriplesAnnotation
                                    ;; TODO: issue #4 - kbp doesn't work
                                    ;"kbp"                 ; KBPTriplesAnnotation
                                    "ner"]

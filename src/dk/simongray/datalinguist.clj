@@ -18,9 +18,9 @@
             [clojure.datafy :refer [datafy]]
             [clojure.core.protocols :as p]
             [camel-snake-kebab.core :as csk]
-            [dk.simongray.datalinguist.semgraph :as semgraph])
+            [dk.simongray.datalinguist.semgraph :as semgraph]
+            [dk.simongray.datalinguist.triple :as triple])
   (:import [java.util Properties
-                      ArrayList
                       Map]
            [edu.stanford.nlp.pipeline StanfordCoreNLP]
            [edu.stanford.nlp.util TypesafeMap]
@@ -54,12 +54,16 @@
                                   CoreAnnotations$MentionsAnnotation
                                   CoreAnnotations$KBPTriplesAnnotation]
            [edu.stanford.nlp.semgraph SemanticGraph
+                                      SemanticGraphEdge
                                       SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
                                       SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation SemanticGraphEdge]
+                                      SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation]
            [edu.stanford.nlp.trees TreeCoreAnnotations$TreeAnnotation
                                    TreeCoreAnnotations$BinarizedTreeAnnotation
-                                   TreeCoreAnnotations$KBestTreesAnnotation]))
+                                   TreeCoreAnnotations$KBestTreesAnnotation]
+           [edu.stanford.nlp.naturalli NaturalLogicAnnotations$RelationTriplesAnnotation
+                                       Polarity]
+           [edu.stanford.nlp.ie.util RelationTriple]))
 
 ;;;;
 ;;;; ANNOTATION RETRIEVAL
@@ -170,10 +174,15 @@
   (annotation CoreAnnotations$TokensAnnotation x))
 
 ;; TODO: issue #4 - kpb annotator doesn't work
+;; TODO: tests
 (defn triples
-  "The KPB triples of `x`."
-  [x]
-  (annotation CoreAnnotations$KBPTriplesAnnotation x))
+  "The triples of `x`; `style` can be :kbp or :openie (default)."
+  ([style x]
+   (case style
+     :openie (annotation NaturalLogicAnnotations$RelationTriplesAnnotation x)
+     :kbp (annotation CoreAnnotations$KBPTriplesAnnotation x)))
+  ([x]
+   (triples :openie x)))
 
 (defn offset
   "The character offset of `x`; `style` can be :end or :begin (default)."
@@ -267,6 +276,14 @@
   (datafy [tsm]
     (datafy-tsm tsm))
 
+  Polarity
+  (datafy [polarity]
+    (.toString polarity))
+
+  RelationTriple
+  (datafy [triple]
+    [(triple/subject triple) (triple/relation triple) (triple/object triple)])
+
   SemanticGraph
   (datafy [g]
     (into {} (for [vertex (semgraph/vertices g)]
@@ -286,9 +303,6 @@
   [x]
   (let [x* (datafy x)]
     (cond
-      (instance? ArrayList x*)
-      (mapv recur-datafy x*)
-
       (seq? x*)
       (mapv recur-datafy x)
 
@@ -298,6 +312,10 @@
       (map? x*)
       (into {} (for [[k v] x*]
                  [(recur-datafy k) (recur-datafy v)]))
+
+      ;; Catches nearly all Java collections, including custom CoreNLP ones.
+      (instance? Iterable x*)
+      (mapv recur-datafy x*)
 
       :else x*)))
 
@@ -359,3 +377,30 @@
         core-nlp (StanfordCoreNLP. ^Properties props true)]
     (fn [^String s]
       (.process core-nlp s))))
+
+(comment
+
+  (def nlp
+    (->pipeline {:annotators ["truecase"                    ; TrueCaseAnnotation
+                              "quote"                       ; QuotationsAnnotation
+                              "entitymentions"              ; MentionsAnnotation
+                              "parse"                       ; TreeAnnotation
+                              "depparse"
+                              "lemma"
+                              "coref"
+                              "openie"
+                              ;; TODO: issue #4 - kbp doesn't work
+                              ;"kbp"                 ; KBPTriplesAnnotation
+                              "ner"]
+                 :quote      {:extractUnclosedQuotes "true"}}))
+
+  (def example
+    (nlp "The returned function will annotate input text with the annotators specified in addition to any unspecified dependency annotators."))
+
+  (->> example triples recur-datafy)
+  (->> example sentences first triples first (triple/object :lemma))
+  (->> example sentences first triples first triple/confidence)
+  (->> example triples ffirst triple/triple->sentence)
+  (->> example triples ffirst triple/triple->dependency-graph)
+
+  #_.)
