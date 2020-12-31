@@ -9,6 +9,7 @@ Most Lisp dialects facilitate interactive development centred around a REPL. Clo
   1. [Building an annotation pipeline](#1-building-an-annotation-pipeline)
   2. [Using the pipeline to annotate text](#2-using-the-pipeline-to-annotate-text)
   3. [Extracting annotations using the annotation functions](#3-extracting-annotations-using-the-annotation-functions)
+  4. [Datafying results](#4-datafying-results)
 * [Clojure integration](#clojure-integration)
   - [View in the REBL](#view-in-the-rebl)
   - [Loom integration](#loom-integration)
@@ -50,7 +51,7 @@ You will likely also need to increase the amount of memory allotted to your JVM 
 > _<a name="maven"><sup>††</sup></a> Stanford can sometimes be bit slow when it comes to uploading more recent versions of CoreNLP to Maven Central._
 
 ## How to use
-DataLinguist has a very simple API for executing various NLP operations. To perform any language processing task you will generally need to **1.** build an annotation pipeline, **2.** annotate some text, and then **3.** extract some of these annotations for analysis.
+DataLinguist has a very simple API for executing various NLP operations. To perform any language processing task you will generally need to **1.** build an annotation pipeline, **2.** annotate some text, **3.** extract some of these annotations for analysis, and (optionally) **4.** datafy the annotations for more idiomatic use in Clojure.
 
 ### 1. Building an annotation pipeline
 Before anything can happen, we need to construct an NLP pipeline. Pipelines are built using plain Clojure data structures which are converted into
@@ -60,8 +61,8 @@ Before anything can happen, we need to construct an NLP pipeline. Pipelines are 
 (require '[dk.simongray.datalinguist :refer :all])
 
 ;; Create a closure around a CoreNLP pipeline.
-;; By default, a CoreNLP pipeline annotates text in the English language.
-(def en
+;; By default, a CoreNLP pipeline will annotate text in the English language.
+(def nlp
   (->pipeline {:annotators ["depparse" "lemma"]}))
 ```
 
@@ -72,7 +73,7 @@ If the resulting pipeline function is called on a piece of text it will output a
 
 ```Clojure
 (def annotated-text
-  (en "This is a piece of text. This is another one."))
+  (nlp "This is a piece of text. This is another one."))
 ```
 
 This data consists of various Java objects and takes the shape of a tree. The data can then be queried using the annotation functions.
@@ -96,19 +97,24 @@ In our example we built a pipeline that could do both dependency parsing and lem
 We can also annotate another piece of text and return the lemmas:
 
 ```Clojure
-(->> (en "She has beaten him before.")
+(->> (nlp "She has beaten him before.")
      tokens
      lemma)
 ;=> ("she" "have" "beat" "he" "before" ".")
 ```
 
-While lemmas are technically only attached to _tokens_ in CoreNLP (and dependency graphs to sentences), the DataLinguist functions do allow you to skip ahead in most cases, e.g.
+While lemmas are technically only attached to _tokens_ in CoreNLP (and dependency graphs to sentences), the DataLinguist functions do allow you to skip ahead in most cases, i.e. we could have written:
 
 ```clojure
-(lemma (en "She has beaten him before."))
+(lemma (nlp "She has beaten him before."))
 ;=> ("she" "have" "beat" "he" "before" ".")
 ```
 
+> NOTE: while this is _really_ convenient behaviour to have in the REPL - particularly if you have not yet memorised the somewhat arbitrary annotation hierarchy used in CoreNLP - it does come with one caveat: the return type can vary unexpectedly!
+> 
+> For example, `(text :plain (nlp "..."))"` will return a string, while `(text :true-case (nlp "..."))"` will return a sequence of strings. The reason for this is simple: text annotations exist at both the document, sentence, and token level, while _true-case_ text annotations only exist at the token level. If you don't want any surprises, make sure to explicitly navigate down the annotation hierarchy using `sentences`, `tokens`, and other relevant functions.
+
+### 4. Datafying results
 If at any point we grow tired of accessing Java objects using the annotation functions, we can call `recur-datafy` and get plain Clojure data structures:
 
 ```Clojure
@@ -130,6 +136,10 @@ If at any point we grow tired of accessing Java objects using the annotation fun
 ; :text "is"}
 ```
 
+These data structures expose the underlying annotation maps of the CoreNLP objects. The keys are based on what set of annotators you have enabled in your pipeline.
+
+> NOTE: the regular `datafy` function can of course be used as well, but `recur-datafy` will always datafy the entire tree.
+
 ## Clojure integration
 Apart from wrapping the features of Stanford CoreNLP, DataLinguist also integrates with common Clojure libraries and workflows. 
 
@@ -148,7 +158,7 @@ Dependency graphs can also be visualised using a modified version of the view fu
 ```Clojure
 (require '[dk.simongray.datalinguist.loom.io :refer [view]])
 
-(view (->> (en "The dependencies of this sentence have been visualised using Graphviz.")
+(view (->> (nlp "The dependencies of this sentence have been visualised using Graphviz.")
            sentences
            dependency-graph
            first))

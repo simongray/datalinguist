@@ -75,7 +75,7 @@
   "Access the annotation of `x` as specified by class `c`.
 
   If `x` doesn't contain the annotation, tries to find the annotation inside any
-  sentences or tokens within x (in that order). Generally, annotations will be
+  tokens or sentences within x, in that order. Generally, annotations will be
   located at either the document level, sentence level, or token level, so
   this behaviour allows skipping some steps in the REPL."
   [^Class c x]
@@ -83,12 +83,11 @@
     (and (some? x) (seqable? x))
     (map (partial annotation c) x)
 
-    ;; TODO: write tests for this special behaviour
     (instance? TypesafeMap x)
     (let [tsm ^TypesafeMap x]
       (or (.get tsm c)
-          (ok (annotation c (.get tsm CoreAnnotations$SentencesAnnotation)))
-          (ok (annotation c (.get tsm CoreAnnotations$TokensAnnotation)))))))
+          (ok (annotation c (.get tsm CoreAnnotations$TokensAnnotation)))
+          (ok (annotation c (.get tsm CoreAnnotations$SentencesAnnotation)))))))
 
 (defn text
   "The text of `x`; `style` can be :true-case or :plain (default)."
