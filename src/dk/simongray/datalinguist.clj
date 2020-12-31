@@ -91,8 +91,6 @@
 
 (defn text
   "The text of `x`; `style` can be :true-case or :plain (default)."
-  {:annotations #{CoreAnnotations$TextAnnotation
-                  CoreAnnotations$TrueCaseTextAnnotation}}
   ([style x]
    (case style
      :plain (annotation CoreAnnotations$TextAnnotation x)
@@ -102,14 +100,11 @@
 
 (defn true-case
   "The true case of `x`."
-  {:annotations #{CoreAnnotations$TrueCaseAnnotation}}
   [x]
   (annotation CoreAnnotations$TrueCaseAnnotation x))
 
 (defn quotations
   "The quotations of `x`; `style` can be :unclosed or :closed (default)."
-  {:annotations #{CoreAnnotations$QuotationsAnnotation
-                  CoreAnnotations$UnclosedQuotationsAnnotation}}
   ([style x]
    (case style
      :closed (annotation CoreAnnotations$QuotationsAnnotation x)
@@ -119,14 +114,12 @@
 
 (defn lemma
   "The lemma of `x`."
-  {:annotations #{CoreAnnotations$LemmaAnnotation}}
   [x]
   (annotation CoreAnnotations$LemmaAnnotation x))
 
 ;; TODO: coarse, other?
 (defn pos
   "The part-of-speech of `x`."
-  {:annotations #{CoreAnnotations$PartOfSpeechAnnotation}}
   [x]
   (annotation CoreAnnotations$PartOfSpeechAnnotation x))
 
@@ -134,10 +127,6 @@
 (defn named-entity
   "The named entity tag of `x`; `style` can be :probs, :coarse, :fine, or
   :tag (default)."
-  {:annotations #{CoreAnnotations$NamedEntityTagAnnotation
-                  CoreAnnotations$FineGrainedNamedEntityTagAnnotation
-                  CoreAnnotations$CoarseNamedEntityTagAnnotation
-                  CoreAnnotations$NamedEntityTagProbsAnnotation}}
   ([style x]
    (case style
      :tag (annotation CoreAnnotations$NamedEntityTagAnnotation x)
@@ -154,12 +143,6 @@
 (defn numeric
   "The numeric value or type of `x`; `style` can be :normalized, :composite,
   :composite-type, :composite-value, :type, or :value (default)."
-  {:annotations #{CoreAnnotations$NumericValueAnnotation
-                  CoreAnnotations$NumericTypeAnnotation
-                  CoreAnnotations$NumericCompositeObjectAnnotation
-                  CoreAnnotations$NumericCompositeValueAnnotation
-                  CoreAnnotations$NumericCompositeTypeAnnotation
-                  CoreAnnotations$NormalizedNamedEntityTagAnnotation}}
   ([style x]
    (case style
      :value (annotation CoreAnnotations$NumericValueAnnotation x)
@@ -173,33 +156,27 @@
 
 (defn mentions
   "The named entity mentions of `x`."
-  {:annotations #{CoreAnnotations$MentionsAnnotation}}
   [x]
   (annotation CoreAnnotations$MentionsAnnotation x))
 
 (defn sentences
   "The sentences of `x`."
-  {:annotations #{CoreAnnotations$SentencesAnnotation}}
   [x]
   (annotation CoreAnnotations$SentencesAnnotation x))
 
 (defn tokens
   "The tokens of `x`."
-  {:annotations #{CoreAnnotations$TokensAnnotation}}
   [x]
   (annotation CoreAnnotations$TokensAnnotation x))
 
 ;; TODO: issue #4 - kpb annotator doesn't work
 (defn triples
   "The KPB triples of `x`."
-  {:annotations #{CoreAnnotations$TokensAnnotation}}
   [x]
   (annotation CoreAnnotations$KBPTriplesAnnotation x))
 
 (defn offset
   "The character offset of `x`; `style` can be :end or :begin (default)."
-  {:annotations #{CoreAnnotations$CharacterOffsetBeginAnnotation
-                  CoreAnnotations$CharacterOffsetEndAnnotation}}
   ([style x]
    (case style
      :begin (annotation CoreAnnotations$CharacterOffsetBeginAnnotation x)
@@ -209,9 +186,6 @@
 
 (defn index
   "The index of `x`; `style` can be :quote, :sentence, or :token (default)."
-  {:annotations #{CoreAnnotations$IndexAnnotation
-                  CoreAnnotations$SentenceIndexAnnotation
-                  CoreAnnotations$QuotationIndexAnnotation}}
   ([style x]
    (case style
      :token (annotation CoreAnnotations$IndexAnnotation x)
@@ -222,8 +196,6 @@
 
 (defn whitespace
   "The whitespace around `x`; `style` can be :after or :before (default)."
-  {:annotations #{CoreAnnotations$BeforeAnnotation
-                  CoreAnnotations$AfterAnnotation}}
   ([style x]
    (case style
      :before (annotation CoreAnnotations$BeforeAnnotation x)
@@ -248,9 +220,6 @@
 (defn dependency-graph
   "The dependency graph of `x`; `style` can be :basic, :enhanced, or :enhanced++
   (default)."
-  {:annotations #{SemanticGraphCoreAnnotations$BasicDependenciesAnnotation
-                  SemanticGraphCoreAnnotations$EnhancedDependenciesAnnotation
-                  SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation}}
   ([style x]
    (case style
      :basic (annotation SemanticGraphCoreAnnotations$BasicDependenciesAnnotation x)
