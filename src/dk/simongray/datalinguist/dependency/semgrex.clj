@@ -1,12 +1,12 @@
-(ns dk.simongray.datalinguist.semgraph.semgrex
-  "Functions dealing with semgrex in CoreNLP.
+(ns dk.simongray.datalinguist.dependency.semgrex
+  "Functions dealing with semgrex in CoreNLP (dependency grammar patterns).
 
   The `se-pattern`, `se-matcher`, `se-find`, and `se-seq` functions all mimic
   existing Clojure regex functions.
 
   The other functions prepended with se- deal with extracting named nodes and
   relations from matches. Matches are of type IndexedWord. Underlying data can
-  be obtained using the functions in `dk.simongray.datalinguist.annotations`."
+  be obtained using the functions in `dk.simongray.datalinguist`."
   (:import [edu.stanford.nlp.semgraph SemanticGraph]
            [edu.stanford.nlp.semgraph.semgrex SemgrexPattern
                                               SemgrexMatcher]))

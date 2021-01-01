@@ -18,7 +18,7 @@
             [clojure.datafy :refer [datafy]]
             [clojure.core.protocols :as p]
             [camel-snake-kebab.core :as csk]
-            [dk.simongray.datalinguist.semgraph :as semgraph]
+            [dk.simongray.datalinguist.dependency :as dependency]
             [dk.simongray.datalinguist.triple :as triple])
   (:import [java.util Properties
                       Map]
@@ -286,16 +286,16 @@
 
   SemanticGraph
   (datafy [g]
-    (into {} (for [vertex (semgraph/vertices g)]
-               [vertex (semgraph/outgoing-edges g vertex)])))
+    (into {} (for [vertex (dependency/vertices g)]
+               [vertex (dependency/outgoing-edges g vertex)])))
 
   SemanticGraphEdge
   (datafy [edge]
-    {:governor  (semgraph/governor edge)
-     :dependent (semgraph/dependent edge)
-     :relation  (semgraph/relation edge)
-     :weight    (semgraph/weight edge)
-     :extra?    (semgraph/extra? edge)}))
+    {:governor  (dependency/governor edge)
+     :dependent (dependency/dependent edge)
+     :relation  (dependency/relation edge)
+     :weight    (dependency/weight edge)
+     :extra?    (dependency/extra? edge)}))
 
 (defn recur-datafy
   "Return a recursively datafied representation of `x`.

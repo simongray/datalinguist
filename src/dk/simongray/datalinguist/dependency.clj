@@ -1,4 +1,4 @@
-(ns dk.simongray.datalinguist.semgraph
+(ns dk.simongray.datalinguist.dependency
   "Functions dealing with dependency grammar graphs, AKA Semantic Graphs.
 
   CoreNLP contains some duplicate field and method names, e.g. governor is
