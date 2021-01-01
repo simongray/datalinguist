@@ -13,6 +13,7 @@ Most Lisp dialects facilitate interactive development centred around a REPL. Clo
 * [Clojure integration](#clojure-integration)
   - [View in the REBL](#view-in-the-rebl)
   - [Loom integration](#loom-integration)
+  - [Generate Datalog tuples](#generate-datalog-tuples)
 * [Wrapper state](#wrapper-state)
 
 > _<a name="name"><sup>†</sup></a> The name is a play on "datalingvist" - the Danish word for "computational linguist" - and Clojure's love of all things data. As a sidenote, the Danish translation of "computer scientist" is actually "datalog"!_
@@ -141,7 +142,7 @@ These data structures expose the underlying annotation maps of the CoreNLP objec
 > NOTE: the regular `datafy` function can of course be used as well, but `recur-datafy` will always datafy the entire tree.
 
 ## Clojure integration
-Apart from wrapping the features of Stanford CoreNLP, DataLinguist also integrates with common Clojure libraries and workflows. 
+Apart from wrapping the features of Stanford CoreNLP, DataLinguist also integrates with common Clojure libraries and workflows.
 
 ### View in the REBL
 The pipeline's annotated output data extends the `Datafiable` protocol introduced in Clojure 1.10 and can therefore be navigated using the [REBL](https://github.com/cognitect-labs/REBL-distro).
@@ -165,6 +166,27 @@ Dependency graphs can also be visualised using a modified version of the view fu
 ```
 
 ![Dependency graph visualised using Graphviz](https://raw.githubusercontent.com/simongray/corenlp-clj/master/doc/graphviz_example.png)
+
+### Generate Datalog tuples
+Some CoreNLP annotators allow you to extract triples from text. You can use the `dk.simongray.datalinguist.triple/triple->datalog` function to convert these triples directly into Datomic-style EaV tuples. In fact, this is the way DataLinguist datafies _any_ CoreNLP triple objects.
+
+Assuming a pipeline containing the `openie` annotator:
+
+```clojure
+(->> (nlp (str "Donald Trump was elected president in 2016. "
+               "In 2021, Joe Biden will succeed Donald Trump as president.")
+     triples
+     recur-datafy))
+```
+The above code might then return the following Datalog-like tuples:
+
+````clojure
+[[["Donald Trump" :was-elected-president-in "2016"]
+  ["Donald Trump" :was-elected "president"]]
+ [["Joe Biden" :will-succeed-donald-trump-as "president"]
+  ["Joe Biden" :will-succeed-donald-trump-in "2021"]
+  ["Joe Biden" :will-succeed "Donald Trump"]]]
+ ````
 
 ## Wrapper state
 You can already perform most common NLP tasks by following the 3-part process [described above](#how-to-use). However, CoreNLP is a huge undertaking that has amassed many NLP tools throughout the years, usually by integrating the products of various Stanford research projects. Some of these tools are well maintained, some not so much. Some play well with the other parts of CoreNLP, some do not. It is the goal of this project to wrap most of them, with a few exceptions:

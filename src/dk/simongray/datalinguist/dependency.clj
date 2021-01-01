@@ -22,7 +22,7 @@
   (:require [clojure.string :as str]
             [loom.graph :refer [Graph Digraph Edge]]
             [loom.attr :refer [AttrGraph]]                  ; TODO: why is this here?)
-            [dk.simongray.datalinguist.static :as static])
+            [dk.simongray.datalinguist.util :as util])
   (:refer-clojure :exclude [parents descendants])
   (:import [java.util Collection]
            [edu.stanford.nlp.ling IndexedWord]
@@ -238,7 +238,7 @@
        :pos (.toPOSList g)
        :compact (.toCompactString g)
        :compact-pos (.toCompactString g true)
-       :dot (.toDotFormat g graph-name (static/corelabel-formats label-format))
+       :dot (.toDotFormat g graph-name (util/corelabel-formats label-format))
        :default (.toFormattedString g))
      (.toFormattedString g ^SemanticGraphFormatter style))))
 

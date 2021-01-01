@@ -1,5 +1,6 @@
 (ns dk.simongray.datalinguist.triple
   "Functions dealing with (subject; relation; object) triples."
+  (:require [dk.simongray.datalinguist.util :as util])
   (:import [edu.stanford.nlp.ie.util RelationTriple]
            [edu.stanford.nlp.util Pair]))
 
@@ -19,7 +20,7 @@
      :span (let [^Pair pair (.subjectTokenSpan triple)]
              [(.first pair) (.second pair)])))
   ([^RelationTriple triple]
-   (subject :text triple)))
+   (subject :tokens triple)))
 
 (defn object
   "The object of the `triple`; `style` can be :span, :link, :head, :lemma or
@@ -35,7 +36,7 @@
      :span (let [^Pair pair (.objectTokenSpan triple)]
              [(.first pair) (.second pair)])))
   ([^RelationTriple triple]
-   (object :text triple)))
+   (object :tokens triple)))
 
 (defn relation
   "The relation of the `triple`; `style` can be :span, :head, :lemma or
@@ -49,7 +50,7 @@
      :span (let [^Pair pair (.relationTokenSpan triple)]
              [(.first pair) (.second pair)])))
   ([^RelationTriple triple]
-   (relation :text triple)))
+   (relation :tokens triple)))
 
 (defn confidence
   "The confidence score of the `triple`."
@@ -72,6 +73,11 @@
   'Tim's father Tom' expresses (Tim; 's father is; Tom)."
   [^RelationTriple triple]
   (.isSuffixBe triple))
+
+(defn implied-be?
+  "If true, this `triple` expresses an implied 'to be' relation."
+  [^RelationTriple triple]
+  (or (prefix-be? triple) (suffix-be? triple)))
 
 (defn suffix-of?
   "If true, this `triple` has an ungrounded 'of' at the end of the relation.
@@ -98,3 +104,15 @@
   "Convert the `triple` to a flat sentence."
   [^RelationTriple triple]
   (.asSentence triple))
+
+(defn triple->datalog
+  "Convert the `triple` to a Datomic-style EaV tuple."
+  [^RelationTriple triple]
+  (let [entity    (util/tokens->string (subject :canonical triple))
+        value     (util/tokens->string (object :canonical triple))
+        attribute (if (empty? (relation triple))
+                    (if (implied-be? triple)
+                      :is
+                      :<unknown-relation>)
+                    (util/tokens->keyword (relation :tokens triple)))]
+    [entity attribute value]))

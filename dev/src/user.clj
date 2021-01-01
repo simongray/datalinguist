@@ -2,7 +2,7 @@
   (:require [clojure.reflect :refer [reflect]]
             [clojure.datafy :refer [datafy nav]]
             [dk.simongray.datalinguist :refer :all]
-            [dk.simongray.datalinguist.static :as static]
+            [dk.simongray.datalinguist.util :as util]
             [dk.simongray.datalinguist.dependency :as dependency]
             [dk.simongray.datalinguist.loom.io :refer [view]])
   (:import [edu.stanford.nlp.ling CoreAnnotations$PartOfSpeechAnnotation]))
@@ -16,7 +16,7 @@
 ;; https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
 (defn zh-pipeline
   []
-  (->pipeline (:chinese static/configs)))
+  (->pipeline (:chinese util/configs)))
 
 (comment
   ;;; ENGLISH

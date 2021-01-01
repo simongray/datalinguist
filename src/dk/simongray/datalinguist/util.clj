@@ -1,7 +1,11 @@
-(ns dk.simongray.datalinguist.static
-  "Collections of more or less static data to be used from other namespaces."
-  (:import [edu.stanford.nlp.ling CoreLabel$OutputFormat]))
-
+(ns dk.simongray.datalinguist.util
+  "Various utility functions used from the other namespaces, along with
+  collections of more or less static data."
+  (:require [clojure.string :as str])
+  (:import [edu.stanford.nlp.ling CoreLabel
+                                  CoreLabel$OutputFormat
+                                  CoreAnnotations$TrueCaseTextAnnotation
+                                  CoreAnnotations$PartOfSpeechAnnotation]))
 
 ;; TODO: document annotator support for the official language models
 ;;       https://stanfordnlp.github.io/CoreNLP/human-languages.html
@@ -53,6 +57,17 @@
    :word            CoreLabel$OutputFormat/WORD
    :word-index      CoreLabel$OutputFormat/WORD_INDEX})
 
+(def punctuation-tags
+  "Part-of-speech tags for punctuation, copied from getPunctuationTags() in the
+  `edu.stanford.nlp.parser.nndep.ParsingSystem` abstract class."
+  #{"''"
+    ","
+    "."
+    ":"
+    "``"
+    "-LRB-"
+    "-RRB-"})
+
 (def configs
   "Example pipeline configurations for various languages or special setups."
 
@@ -68,3 +83,26 @@
                           :sighanPostProcessing "true"},
              :ssplit     {:boundaryTokenRegex "[.。]|[!?！？]+"},
              :pos        {:model "edu/stanford/nlp/models/pos-tagger/chinese-distsim.tagger"}}})
+
+(defn tokens->string
+  "Get a normalised string representation of the given `tokens`."
+  [tokens]
+  (let [token->text (fn [^CoreLabel token]
+                      (str
+                        (or (.before token) " ")
+                        (or (.get token CoreAnnotations$TrueCaseTextAnnotation)
+                            (.word token))))]
+    (str/triml (str/join (map token->text tokens)))))
+
+(defn tokens->keyword
+  "Get a normalised keyword representation of the given `tokens`."
+  [tokens]
+  (let [non-word? (fn [^CoreLabel token]
+                    (let [tag (.get token CoreAnnotations$PartOfSpeechAnnotation)]
+                      (or (get punctuation-tags tag)
+                          (re-matches #"\W" (.word token)))))]
+    (->> (remove non-word? tokens)
+         (map (comp str/lower-case #(.word ^CoreLabel %)))
+         (str/join "-")
+         keyword)))
+

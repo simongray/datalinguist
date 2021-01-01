@@ -19,7 +19,8 @@
             [clojure.core.protocols :as p]
             [camel-snake-kebab.core :as csk]
             [dk.simongray.datalinguist.dependency :as dependency]
-            [dk.simongray.datalinguist.triple :as triple])
+            [dk.simongray.datalinguist.triple :as triple]
+            [dk.simongray.datalinguist.util :as util])
   (:import [java.util Properties
                       Map]
            [edu.stanford.nlp.pipeline StanfordCoreNLP]
@@ -282,7 +283,7 @@
 
   RelationTriple
   (datafy [triple]
-    [(triple/subject triple) (triple/relation triple) (triple/object triple)])
+    (triple/triple->datalog triple))
 
   SemanticGraph
   (datafy [g]
@@ -395,12 +396,18 @@
                  :quote      {:extractUnclosedQuotes "true"}}))
 
   (def example
-    (nlp "The returned function will annotate input text with the annotators specified in addition to any unspecified dependency annotators."))
+    (nlp (str "Donald Trump was elected president in 2016. "
+              "In 2021, Joe Biden will succeed Donald Trump as president.")))
 
+  (->> (nlp "This here -- this is a dot.") tokens util/tokens->keyword)
   (->> example triples recur-datafy)
-  (->> example sentences first triples first (triple/object :lemma))
+  (->> example sentences second triples first recur-datafy)
+  (->> example sentences second triples second recur-datafy)
+  (->> example sentences first triples first (triple/relation :head))
   (->> example sentences first triples first triple/confidence)
-  (->> example triples ffirst triple/triple->sentence)
+  (->> example sentences first triples (map triple/triple->datalog))
+  (->> example sentences first triples first triple/triple->datalog)
+  (->> example triples ffirst triple/->sentence)
   (->> example triples ffirst triple/triple->dependency-graph)
 
   #_.)
