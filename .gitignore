@@ -113,3 +113,6 @@ Temporary Items
 StanfordCoreNLP-chinese.properties
 .idea
 .cpcache
+
+# Office temp files
+~$*
