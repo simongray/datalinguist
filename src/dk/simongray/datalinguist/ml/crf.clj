@@ -1,9 +1,10 @@
 (ns dk.simongray.datalinguist.ml.crf
-  (:require [clojurewerkz.propertied.properties :as p]
+  (:require
             [tech.v3.dataset :as ds]
             [tech.v3.dataset.modelling :as ds-mod]
             [tech.v3.dataset.column-filters :as cf]
-            [tech.v3.ml :as ml]            )
+            [dk.simongray.datalinguist :as dl]
+            [tech.v3.ml :as ml])
   (:import [edu.stanford.nlp.sequences SeqClassifierFlags]
            [edu.stanford.nlp.ie.crf CRFClassifier]
            [java.io File]))
@@ -66,7 +67,7 @@
             (merge file-options)
             (assoc
              "trainFile" (.getAbsolutePath training-file))
-            (p/map->properties)
+            (dl/properties)
             )
         crf (CRFClassifier. props)]
 

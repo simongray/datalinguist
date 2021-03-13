@@ -351,7 +351,7 @@
         flat-k+v (fn [ks] [(ks->str ks) (get-in m ks)])]
     (into {} (map flat-k+v kscoll))))
 
-(defn- properties
+(defn properties
   "Make a Properties object based on a map `m`."
   [m]
   (doto (Properties.)
