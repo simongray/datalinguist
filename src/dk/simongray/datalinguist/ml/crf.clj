@@ -6,9 +6,7 @@
             [tech.v3.ml :as ml]            )
   (:import [edu.stanford.nlp.sequences SeqClassifierFlags]
            [edu.stanford.nlp.ie.crf CRFClassifier]
-
-           [java.io File])
-  )
+           [java.io File]))
 
 
 
@@ -81,48 +79,46 @@
         _ (.train crf)]
     crf))
 
-
+(defn- tripple->seq [tripples]
+  (map
+   #(.asList %)
+   tripples
+   )
+  )
 
 (defn- predict-crf [dataset text-col crf]
   (-> dataset
       (ds/add-column
        (ds/new-column :ner
                       (map
-                       #(.classifyToCharacterOffsets crf %)
+                       #(tripple->seq (.classifyToCharacterOffsets crf %))
                        (get dataset text-col))))))
 
 
 
 (defn train [feature-ds target-ds options]
+  "Trains a edu.stanford.nlp.ie.crf.CRFClassifier .
+The training data needs to be given as tokens in the feature column of the dataset and the
+gold class needs to be given in the inference-target column of the dataset.
+The options maps can contain in :crf-options any option specified in the javadoc of CRFClassifier.
+
+This methods gets called by `tech.ml `"
   (train-crf
    (ds/concat feature-ds target-ds)
    (first (ds/column-names feature-ds))
    (first (ds/column-names target-ds))
-   (merge standard-props (:cfr-options options))))
+   (merge standard-props (:crf-options options))))
 
 
 (defn predict [feature-ds thawed-model model]
+  "Predicts on new data using the CRF classifier.
+The data need to be given a texts in the feature column of the dataset.
+
+This method gets called by `tech.ml`"
+
   (predict-crf feature-ds (first  (ds/column-names feature-ds)) thawed-model))
 
-(ml/define-model! :standford-nlp/cfr
+(ml/define-model! :standford-nlp/crf
   train
   predict
   {})
-
-
-(comment
-  (def train-ds
-    (->
-     (ds/->dataset "./test/data/jane-austen-emma-ch1.tsv" {:header-row? false :key-fn keyword})
-     (ds-mod/set-inference-target :column-1)))
-
-  (def model
-    (ml/train train-ds {:model-type :standford-nlp/cfr}))
-
-  (def text-ds
-    (ds/->dataset
-     {:column-0 ["Mr." "Smith" "Mrs." "Weston" ]})
-    )
-
-   (ml/predict text-ds model)
-  )
