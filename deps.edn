@@ -4,8 +4,7 @@
            camel-snake-kebab                 {:mvn/version "0.4.2"}
            edu.stanford.nlp/stanford-corenlp {:mvn/version "4.2.0"}
            techascent/tech.ml {:mvn/version "5.01"}
-           techascent/tech.ml.dataset {:mvn/version "5.02"}
-           ;; I need this PR https://github.com/techascent/tech.ml.dataset/pull/216 as well, not released yet
+           techascent/tech.ml.dataset {:mvn/version "5.05"}
            clojurewerkz/propertied {:mvn/version "1.3.0"}
 
            }

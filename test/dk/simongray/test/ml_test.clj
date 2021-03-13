@@ -28,5 +28,4 @@
     (is (= [ ["PERS" 7 10]
              ["PERS" 25 30]]
            (first (:ner prediction))
-           )))
-  )
+           ))))

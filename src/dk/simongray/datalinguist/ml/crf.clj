@@ -68,15 +68,14 @@
              "trainFile" (.getAbsolutePath training-file))
             (p/map->properties)
             )
+        crf (CRFClassifier. props)]
 
-        _ (-> dataset
-              (ds/select-columns [word-col tag-col])
-              (ds/write! (.getAbsolutePath training-file)
-                         ;; {:skip-headers true}
-                         )
-              )
-        crf (CRFClassifier. props)
-        _ (.train crf)]
+    (-> dataset
+        (ds/select-columns [word-col tag-col])
+        (ds/write! (.getAbsolutePath training-file)
+                   {:skip-headers true}
+                   ))
+    (.train crf)
     crf))
 
 (defn- tripple->seq [tripples]
