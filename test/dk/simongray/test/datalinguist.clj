@@ -1,6 +1,8 @@
 (ns dk.simongray.test.datalinguist
   (:require [clojure.test :refer :all]
-            [dk.simongray.datalinguist :refer :all]))
+            [dk.simongray.datalinguist :refer :all]
+            [dk.simongray.datalinguist.dependency.semgrex :refer :all])
+  (:import [edu.stanford.nlp.ling IndexedWord]))
 
 (def en-nlp
   (delay (->pipeline {:annotators ["truecase"               ; TrueCaseAnnotation
@@ -145,3 +147,33 @@
   (let [actual1  (-> sweden-example mentions text)
         expected ["Sweden" "Mary" "Ystad"]]
     (is (= actual1 expected))))
+
+(deftest test-semgrex
+  (let [example (->> (@en-nlp "He sliced some slices of lemon into even smaller slices.")
+                     dk.simongray.datalinguist/sentences
+                     first
+                     dk.simongray.datalinguist/dependency-graph)]
+
+    ;; Find the first matching node
+    (is (= "slice" (.lemma (sem-find (sem-pattern "{lemma:slice}") example))))
+    (is (= "lemon" (.lemma (sem-find (sem-pattern "{lemma:lemon}") example))))
+
+    ;; Find every matching node
+    (is (= 2 (count (sem-seq (sem-pattern "{lemma:slice;tag:/NN.?/}") example))))
+
+    ;; Find pattern with named nodes and relations
+    (let [deps  (sem-seq (sem-pattern "{lemma:slice} > {}=dependent") example)
+          relns (sem-seq (sem-pattern "{lemma:slice} >=reln {}") example)
+          both  (sem-seq (sem-pattern "{lemma:slice} >=reln {}=dependent") example)
+          all   (concat deps relns both)]
+      (is (= 8 (count deps) (count relns) (count both)))
+      (is (every? vector all))
+      (is (every? #(instance? IndexedWord %) (map first all)))
+      (is (every? map? (map second all)))
+      (is (= #{:dependent} (set (keys (second (first deps))))))
+      (is (= #{:reln} (set (keys (second (first relns))))))
+      (is (= #{:reln :dependent} (set (keys (second (first both)))))))
+
+    ;; See if the pattern "matches" (the root must match)
+    (is (some? (sem-matches (sem-pattern "{lemma:slice}") example)))
+    (is (nil? (sem-matches (sem-pattern "{lemma:lemon}") example)))))
