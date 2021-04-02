@@ -1,10 +1,10 @@
 (ns dk.simongray.datalinguist.dependency.semgrex
   "Functions dealing with semgrex in CoreNLP (dependency grammar patterns).
 
-  The `sem-pattern`, `sem-matcher`, `sem-find`, and `sem-seq` functions mimic
-  existing Clojure regex functions. The `sem-named` function also mimics
-  the re-groups function and serves a similar purpose, although rather than
-  returning regex groups it returns named nodes in the semgrex patterns.
+  These functions all mimic the existing Clojure Core regex functions. The
+  `sem-named` function also mimics re-groups and serves a similar purpose,
+  although rather than returning groups it returns named nodes/relations defined
+  in the pattern.
 
   Matches are of type IndexedWord. Underlying data can be obtained using the
   core annotation functions in `dk.simongray.datalinguist`."
