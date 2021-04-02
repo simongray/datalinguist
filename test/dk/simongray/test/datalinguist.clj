@@ -1,7 +1,7 @@
 (ns dk.simongray.test.datalinguist
   (:require [clojure.test :refer :all]
             [dk.simongray.datalinguist :refer :all]
-            [dk.simongray.datalinguist.dependency.semgrex :refer :all])
+            [dk.simongray.datalinguist.dependency :refer :all])
   (:import [edu.stanford.nlp.ling IndexedWord]))
 
 (def en-nlp
