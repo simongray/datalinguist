@@ -55,7 +55,7 @@
         props         (-> opts
                           (merge file-opts)
                           (assoc
-                           "trainFile" (.getAbsolutePath training-file))
+                            "trainFile" (.getAbsolutePath training-file))
                           (util/properties))]
     (-> dataset
         (ds/select-columns [word-col tag-col])
@@ -100,19 +100,13 @@
   (let [word-col (first (ds/column-names feature-dataset))]
     (predict-crf feature-dataset word-col thawed-model)))
 
-
-
 (def metamorph-ml-options
   (map
-   (fn [[k v]]
-     (hash-map :name k :type :string :default v))
-   default-opts
-   ))
+    (fn [[k v]]
+      (hash-map :name k :type :string :default v))
+    default-opts))
 
 (ml/define-model! :corenlp/crf train predict
-  {:documentation {:javadoc "https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/ie/crf/CRFClassifier.html"
+  {:documentation {:javadoc    "https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/ie/crf/CRFClassifier.html"
                    :user-guide "https://nlp.stanford.edu/software/CRF-NER.html"}
-   :options metamorph-ml-options
-   })
-
-
+   :options       metamorph-ml-options})

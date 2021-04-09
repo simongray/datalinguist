@@ -19,7 +19,7 @@
 
 (deftest train-predict-defaul-no-ngrams
   (let [model      (ml/train train-ds {:model-type :corenlp/crf
-                                      :useNGrams "false"})
+                                       :useNGrams  "false"})
         text-ds    (ds/->dataset {:column-0 ["I like Mr. X and I like  Mr. Y" "Smith" "Mrs." "Weston"]})
         prediction (ml/predict text-ds model)]
     (is (= [["PERS" 7 12]
