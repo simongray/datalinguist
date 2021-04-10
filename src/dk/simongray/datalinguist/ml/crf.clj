@@ -1,11 +1,10 @@
 (ns dk.simongray.datalinguist.ml.crf
   (:require [tech.v3.dataset :as ds]
             [dk.simongray.datalinguist.util :as util]
-            [tech.v3.ml :as ml])
+            [scicloj.metamorph.ml :as ml])
   (:import [edu.stanford.nlp.ie.crf CRFClassifier]
            [java.io File]))
 
-;; TODO: expand documentation as discussed in https://github.com/simongray/datalinguist/pull/6
 
 (def default-opts
   {;; location where you would like to save (serialize) your classifier
@@ -88,7 +87,7 @@
   (train-crf (ds/concat feature-dataset target-dataset)
              (first (ds/column-names feature-dataset))
              (first (ds/column-names target-dataset))
-             (merge default-opts (:crf-options opts))))
+             (merge default-opts opts)))
 
 ;; TODO: what's with the unused model param?
 (defn predict
@@ -101,4 +100,13 @@
   (let [word-col (first (ds/column-names feature-dataset))]
     (predict-crf feature-dataset word-col thawed-model)))
 
-(ml/define-model! :corenlp/crf train predict {})
+(def metamorph-ml-options
+  (map
+    (fn [[k v]]
+      (hash-map :name k :type :string :default v))
+    default-opts))
+
+(ml/define-model! :corenlp/crf train predict
+  {:documentation {:javadoc    "https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/ie/crf/CRFClassifier.html"
+                   :user-guide "https://nlp.stanford.edu/software/CRF-NER.html"}
+   :options       metamorph-ml-options})
