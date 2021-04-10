@@ -20,7 +20,7 @@
 
   Functions dealing with semgrex in CoreNLP (dependency grammar patterns) have
   been wrapped so as to mimic the existing Clojure Core regex functions. The
-  `sem-named` function also mimics re-groups and serves a similar purpose,
+  `sem-result` function also mimics re-groups and serves a similar purpose,
   although rather than returning groups it returns named nodes/relations defined
   in the pattern.
 
@@ -293,16 +293,16 @@
   (transpose [g] (SemanticGraph. ^Collection (map flip (.typedDependencies g)))))
 
 (defn sem-pattern
-  "Return an instance of SemgrexPattern, for use, e.g. in se-matcher."
+  "Return an instance of SemgrexPattern, for use, e.g. in sem-matcher."
   [^String s]
   (SemgrexPattern/compile s))
 
 (defn sem-matcher
-  "Create a SemgrexMatcher from `s` and dependency graph `g`; use in se-find."
+  "Create a SemgrexMatcher from `s` and dependency graph `g`; use in sem-find."
   [^SemgrexPattern p ^SemanticGraph g]
   (.matcher p g))
 
-(defn sem-named
+(defn sem-result
   "Returns the named nodes and relations from the most recent match/find.
   If there are no named nodes/relations, returns the match itself.
   If there are named nodes/relations, returns a vector with the first element
@@ -323,7 +323,7 @@
   SemgrexMatcher.find()."
   ([^SemgrexMatcher m]
    (when (.find m)
-     (sem-named m)))
+     (sem-result m)))
   ([^SemgrexPattern p ^SemanticGraph g]
    (sem-find (sem-matcher p g))))
 
@@ -333,20 +333,20 @@
   (let [^SemgrexMatcher m (sem-matcher p g)]
     ((fn step []
        (when (.find m)
-         (cons (sem-named m) (lazy-seq (step))))))))
+         (cons (sem-result m) (lazy-seq (step))))))))
 
 (defn sem-matches
   "Returns the match, if any, of dependency graph `g` to pattern `p` using
-  edu.stanford.nlp.semgraph.semgrex.SemgrexMatcher.matches(). Uses sem-named to
-  return the groups.
+  edu.stanford.nlp.semgraph.semgrex.SemgrexMatcher.matches(). Uses sem-result to
+  return any named nodes or relations.
 
   It's actually closer to java.util.regex's \"lookingAt\" in that the root of
   the graph has to match the root of the pattern but the whole tree does not
   have to be \"accounted for\"."
   [^SemgrexPattern p ^SemanticGraph g]
-  (let [m (sem-matcher p g)]
+  (let [^SemgrexMatcher m (sem-matcher p g)]
     (when (.matches m)
-      (sem-named m))))
+      (sem-result m))))
 
 (comment
   (def nlp
