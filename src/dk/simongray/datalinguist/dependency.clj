@@ -1,5 +1,5 @@
 (ns dk.simongray.datalinguist.dependency
-  "Functions dealing with dependency grammar graphs, AKA Semantic Graphs.
+  "Functions dealing with dependency grammar, i.e. the SemanticGraph class.
 
   CoreNLP contains some duplicate field and method names, e.g. governor is
   the same as source. This namespace only retains a single name for these terms.
@@ -13,7 +13,7 @@
   Nor have any useless utility functions that are easily replicated:
     - toRecoveredSentenceString and the like
     - empty, size
-    - sorting methods; just use Clojure sort, e.g. (sort (vertices g))
+    - sorting methods; just use Clojure sort, e.g. (sort (nodes g))
 
   The methods in SemanticGraphUtils are mostly meant for internal consumption,
   though a few are useful enough to warrant wrapping here, e.g. subgraph.
@@ -44,13 +44,13 @@
                                               SemgrexMatcher]
            [edu.stanford.nlp.international Language]))
 
-(defn governor
-  "The governor (= source) of the relation represented by `edge`."
+(defn source
+  "The source (= governor) of the relation represented by `edge`."
   [^SemanticGraphEdge edge]
   (.getSource edge))
 
-(defn dependent
-  "The dependent (= target) of the relation represented by `edge`."
+(defn target
+  "The target (= dependent) of the relation represented by `edge`."
   [^SemanticGraphEdge edge]
   (.getTarget edge))
 
@@ -75,8 +75,8 @@
   [^SemanticGraphEdge edge]
   (.isExtra edge))
 
-(defn nth-vertex
-  "The vertex at index `n` in dependency graph `g`; `not-found` is optional.
+(defn nth-node
+  "The node at index `n` in dependency graph `g`; `not-found` is optional.
 
   Note: indexes start at 1 in the SemanticGraph class, but this function
   respects the regular Clojure semantics and starts counting at 0."
@@ -87,8 +87,8 @@
    (or (.getNodeByIndexSafe g (inc n))
        not-found)))
 
-(defn vertices
-  "The vertices of dependency graph `g`."
+(defn nodes
+  "The nodes of dependency graph `g`."
   [^SemanticGraph g]
   (.vertexSet g))
 
@@ -97,10 +97,10 @@
   [^SemanticGraph g]
   (seq (.edgeIterable g)))
 
-(defn contains-vertex?
-  "True if dependency graph `g` contains `vertex`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.containsVertex g vertex))
+(defn contains-node?
+  "True if dependency graph `g` contains `node`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.containsVertex g node))
 
 (defn contains-edge?
   "True if dependency graph `g` contains `edge`, or `governor` + `dependent`."
@@ -110,98 +110,98 @@
    (.containsEdge g edge)))
 
 (defn parent
-  "The syntactic parent of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.getParent g vertex))
+  "The syntactic parent of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getParent g node))
 
 (defn parents
-  "The parents of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.getParents g vertex))
+  "The parents of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getParents g node))
 
 (defn children
-  "The children of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.getChildren g vertex))
+  "The children of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getChildren g node))
 
-;; TODO: any difference between yield, subgraph vertices and descendants??
+;; TODO: any difference between yield, subgraph nodes and descendants??
 (defn descendants
-  "The descendants of the `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.descendants g vertex))
+  "The descendants of the `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.descendants g node))
 
 (defn siblings
-  "The siblings of the `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.getSiblings g vertex))
+  "The siblings of the `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getSiblings g node))
 
 (defn common-ancestor
-  [^SemanticGraph g ^IndexedWord vertex1 ^IndexedWord vertex2]
-  (.getCommonAncestor g vertex1 vertex2))
+  [^SemanticGraph g ^IndexedWord node1 ^IndexedWord node2]
+  (.getCommonAncestor g node1 node2))
 
 (defn ancestor?
-  "True if `vertex` is the ancestor of `child` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord child ^IndexedWord vertex]
-  (.isAncestor g child vertex))
+  "True if `node` is the ancestor of `child` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord child ^IndexedWord node]
+  (.isAncestor g child node))
 
 (defn out-degree
-  "The number of outgoing edges of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.outDegree g vertex))
+  "The number of outgoing edges of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.outDegree g node))
 
 (defn in-degree
-  "The number of incoming edges of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.inDegree g vertex))
+  "The number of incoming edges of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.inDegree g node))
 
 (defn outgoing-edges
-  "The outgoing edges of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.outgoingEdgeList g vertex))
+  "The outgoing edges of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.outgoingEdgeList g node))
 
 (defn incoming-edges
-  "The incoming edges of `vertex` in dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.incomingEdgeList g vertex))
+  "The incoming edges of `node` in dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.incomingEdgeList g node))
 
 (defn root
-  "The root vertex of a dependency dependency graph `g`."
+  "The root node of a dependency dependency graph `g`."
   [^SemanticGraph g]
   (.getFirstRoot g))
 
 (defn acyclic?
-  "True if the dependency graph `g` or subgraph at `vertex` contains no cycles."
+  "True if the dependency graph `g` or subgraph at `node` contains no cycles."
   ([^SemanticGraph g]
    (.isDag g))
-  ([^SemanticGraph g ^IndexedWord vertex]
-   (.isDag g vertex)))
+  ([^SemanticGraph g ^IndexedWord node]
+   (.isDag g node)))
 
 (defn topological-sort
-  "The topologically sorted list of all vertices in dependency graph `g`."
+  "The topologically sorted list of all nodes in dependency graph `g`."
   [^SemanticGraph g]
   (.topologicalSort g))
 
 (defn span
-  "The span of the subtree yield of this `vertex` in dependency graph `g`.
+  "The span of the subtree yield of this `node` in dependency graph `g`.
   Returns a zero-indexed pair of integers where end is exclusive."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (let [^Pair pair (.yieldSpan g vertex)]
+  [^SemanticGraph g ^IndexedWord node]
+  (let [^Pair pair (.yieldSpan g node)]
     [(.first pair) (.second pair)]))
 
 (defn path
-  "The shortest path `from` vertex and `to` vertex in dependency graph `g`;
+  "The shortest path `source-node` and `target-node` in dependency graph `g`;
   `style` can optionally be :directed (default) or :undirected."
-  ([style ^SemanticGraph g ^IndexedWord from ^IndexedWord to]
+  ([style ^SemanticGraph g ^IndexedWord source-node ^IndexedWord target-node]
    (case style
-     :directed (.getShortestDirectedPathNodes g from to)
-     :undirected (.getShortestUndirectedPathNodes g from to)))
+     :directed (.getShortestDirectedPathNodes g source-node target-node)
+     :undirected (.getShortestUndirectedPathNodes g source-node target-node)))
   ([^SemanticGraph g ^IndexedWord from ^IndexedWord to]
    (path :directed g from to)))
 
 (defn path-to-root
-  "Find the path from the given `vertex` to the root of dependency graph `g`."
-  [^SemanticGraph g ^IndexedWord vertex]
-  (.getPathToRoot g vertex))
+  "Find the path from the given `node` to the root of dependency graph `g`."
+  [^SemanticGraph g ^IndexedWord node]
+  (.getPathToRoot g node))
 
 (defn subgraph
   "Create a subgraph of dependency graph `g` from the chosen `root`."
@@ -255,14 +255,14 @@
 (defn loom-digraph
   "Create a loom Digraph from dependency graph `g`."
   [^SemanticGraph g]
-  (let [vertex-set      (vertices g)
-        vertex+children #(list % (children g %))]
-    (loom.graph/digraph (apply hash-map (mapcat vertex+children vertex-set)))))
+  (let [node-set      (nodes g)
+        node+children #(list % (children g %))]
+    (loom.graph/digraph (apply hash-map (mapcat node+children node-set)))))
 
 (defn- flip
   "Flip the governor and dependent of a TypedDependency `td`."
   [^TypedDependency td]
-  ;; ROOT isn't a real vertex, it is just used to mark the root vertex
+  ;; ROOT isn't a real node, it is just used to mark the root node
   (if (= (.reln td) (GrammaticalRelation/ROOT))
     (TypedDependency. (.reln td) (.gov td) (.dep td))
     (TypedDependency. (.reln td) (.dep td) (.gov td))))
@@ -273,14 +273,14 @@
 ;; that depends on these constraints require conversion using loom-digraph.
 (extend-type SemanticGraphEdge
   Edge
-  (src [edge] (governor edge))
-  (dest [edge] (dependent edge)))
+  (src [edge] (source edge))
+  (dest [edge] (target edge)))
 
 (extend-type SemanticGraph
   Graph
-  (nodes [g] (vertices g))
+  (nodes [g] (nodes g))
   (edges [g] (edges g))
-  (has-node? [g node] (contains-vertex? g node))
+  (has-node? [g node] (contains-node? g node))
   (has-edge? [g n1 n2] (contains-edge? g n1 n2))
   (successors* [g node] (children g node))
   (out-degree [g node] (out-degree g node))

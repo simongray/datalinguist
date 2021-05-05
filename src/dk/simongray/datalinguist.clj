@@ -287,13 +287,13 @@
 
   SemanticGraph
   (datafy [g]
-    (into {} (for [vertex (dependency/vertices g)]
-               [vertex (dependency/outgoing-edges g vertex)])))
+    (into {} (for [node (dependency/nodes g)]
+               [node (dependency/outgoing-edges g node)])))
 
   SemanticGraphEdge
   (datafy [edge]
-    {:governor  (dependency/governor edge)
-     :dependent (dependency/dependent edge)
+    {:governor  (dependency/source edge)
+     :dependent (dependency/target edge)
      :relation  (dependency/relation edge)
      :weight    (dependency/weight edge)
      :extra?    (dependency/extra? edge)}))
