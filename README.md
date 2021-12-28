@@ -1,4 +1,6 @@
 # DataLinguist
+[![datalinguist](https://img.shields.io/clojars/v/dk.simongray/datalinguist.svg)](https://clojars.org/dk.simongray/datalinguist)
+
 DataLinguist<sup>[†](#name)</sup> is a Clojure wrapper for the Natural Language Processing behemoth, [Stanford CoreNLP](https://github.com/stanfordnlp/CoreNLP). The goal of the project is to support an NLP workflow in a data-oriented style, integrating relevant Clojure protocols and libraries.
 
 Most Lisp dialects facilitate interactive development centred around a REPL. Clojure - being both a JVM language and a data-oriented one - is perfectly suited for wrapping Stanford CoreNLP's fairly opaque language processing tools. The dizzying heights of Java class hierarchies are brought down to eye level and repackaged into more accessible functions inside a few Clojure namespaces. At the same time, the API is streamlined with most of the obvious cruft left out.
@@ -19,14 +21,18 @@ Most Lisp dialects facilitate interactive development centred around a REPL. Clo
 > _<a name="name"><sup>†</sup></a> The name is a play on "datalingvist" - the Danish word for "computational linguist" - and Clojure's love of all things data. As a sidenote, the Danish translation of "computer scientist" is actually "datalog"!_
 
 ## Setup
-The library can be included as a `deps.edn` dependency by referencing a specific commit SHA in this repository:
+Major releases are available [on Clojars](https://clojars.org/dk.simongray/datalinguist):
+
+```edn
+dk.simongray/datalinguist {:mvn/version "0.1.163"}
+```
+
+The library can also be included as a `deps.edn` dependency by referencing a specific commit SHA in this repository:
 
 ```edn
 simongray/datalinguist {:git/url "https://github.com/simongray/datalinguist"
-                        :sha     "..."}}
+                        :sha     "..."}
 ```
-
-TODO: put the library on clojars, add a short description
 
 ### Language models
 DataLinguist requires a language model to access the full feature set. Several precompiled models are available through Maven Central<sup>[††](#maven)</sup>. These models follow the same versioning scheme as CoreNLP itself. See the official [CoreNLP documentation](https://stanfordnlp.github.io/CoreNLP/download.html) for more on language models.
