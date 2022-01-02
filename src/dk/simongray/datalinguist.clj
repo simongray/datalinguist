@@ -64,7 +64,9 @@
                                    TreeCoreAnnotations$KBestTreesAnnotation]
            [edu.stanford.nlp.naturalli NaturalLogicAnnotations$RelationTriplesAnnotation
                                        Polarity]
-           [edu.stanford.nlp.ie.util RelationTriple]))
+           [edu.stanford.nlp.ie.util RelationTriple]
+           [edu.stanford.nlp.ling.tokensregex TokenSequenceMatcher
+                                              TokenSequencePattern]))
 
 ;;;;
 ;;;; ANNOTATION RETRIEVAL
@@ -237,6 +239,61 @@
      :enhanced++ (annotation SemanticGraphCoreAnnotations$EnhancedPlusPlusDependenciesAnnotation x)))
   ([x]
    (dependency-graph :enhanced++ x)))
+
+
+;;;;
+;;;; TOKENS REGEX
+;;;;
+
+(defn token-pattern
+  "Return an instance of TokenSequencePattern, for use, e.g. in token-matcher."
+  [^String s]
+  (TokenSequencePattern/compile s))
+
+(defn token-matcher
+  "Create a TokenSequenceMatcher from `p` and `tokens`; use in token-find."
+  [^TokenSequencePattern p tokens]
+  (.matcher p tokens))
+
+(defn token-groups
+  "Returns the groups from the most recent match/find. If there are no
+  nested groups, returns tokens for the entire match. If there are
+  nested groups, returns a vector of the groups, the first element
+  being the entire match."
+  [^TokenSequenceMatcher m]
+  (let [gc (.groupCount m)]
+    (if (zero? gc)
+      (.groupNodes m)
+      (loop [ret [] c 0]
+        (if (<= c gc)
+          (recur (conj ret (.groupNodes m c)) (inc c))
+          ret)))))
+
+(defn token-find
+  "Return the next semgrex match, if any, of tokens to pattern, using
+  TokenSequenceMatcher.find()."
+  ([^TokenSequenceMatcher m]
+   (when (.find m)
+     (token-groups m)))
+  ([^TokenSequencePattern p tokens]
+   (token-find (token-matcher p tokens))))
+
+(defn token-seq
+  "Return a lazy list of matches of TokenSequencePattern `p` in `tokens`."
+  [^TokenSequencePattern p tokens]
+  (let [^TokenSequenceMatcher m (token-matcher p tokens)]
+    ((fn step []
+       (when (.find m)
+         (cons (token-groups m) (lazy-seq (step))))))))
+
+(defn token-matches
+  "Returns the match, if any, of tokens to pattern, using
+  edu.stanford.nlp.ling.tokensregex.TokenSequenceMatcher.matches().
+  Uses token-groups to return the groups."
+  [^TokenSequencePattern p ^SemanticGraph g]
+  (let [^TokenSequenceMatcher m (token-matcher p g)]
+    (when (.matches m)
+      (token-groups m))))
 
 
 ;;;;

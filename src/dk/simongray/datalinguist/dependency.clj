@@ -298,7 +298,7 @@
   (SemgrexPattern/compile s))
 
 (defn sem-matcher
-  "Create a SemgrexMatcher from `s` and dependency graph `g`; use in sem-find."
+  "Create a SemgrexMatcher from `p` and dependency graph `g`; use in sem-find."
   [^SemgrexPattern p ^SemanticGraph g]
   (.matcher p g))
 
