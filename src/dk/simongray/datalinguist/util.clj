@@ -74,7 +74,8 @@
 
   ;; Adapted from configuration previously found on this page (now missing):
   ;;   https://stanfordnlp.github.io/CoreNLP/human-languages.html#chinese
-  {:chinese {:annotators "tokenize,ssplit,pos,depparse",
+  {:chinese {:annotators "tokenize,ssplit,pos,parse,depparse",
+             :parse      {:model "edu/stanford/nlp/models/srparser/chineseSR.ser.gz"}
              :depparse   {:model "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz"},
              :ndepparse  {:language "chinese"},
              :tokenize   {:language "zh"},
