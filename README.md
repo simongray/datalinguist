@@ -17,6 +17,8 @@ Most Lisp dialects facilitate interactive development centred around a REPL. Clo
   - [Loom integration](#loom-integration)
   - [Generate Datalog tuples](#generate-datalog-tuples)
 * [Wrapper state](#wrapper-state)
+* [Notes](#notes)
+* [Licence](#licence)
 
 > _<a name="name"><sup>†</sup></a> The name is a play on "datalingvist" - the Danish word for "computational linguist" - and Clojure's love of all things data. As a sidenote, the Danish translation of "computer scientist" is actually "datalog"!_
 
@@ -205,6 +207,13 @@ You can already perform most common NLP tasks by following the 3-part process [d
 4. Code dealing with training new language models has been left out. For now, DataLinguist is focused on wrapping the language analysis functionality.
 
 Please refer to [this overview](https://github.com/simongray/datalinguist/blob/master/doc/CoreNLP_packages.md) for more on the CoreNLP package structure and what's been wrapped in DataLinguist.
+
+## Notes
+The class files in Stanford CoreNLP contain the primary documentation for the three supported pattern languages:
+
+* TokensRegex documentation is found in the [TokenSequencePattern](https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/ling/tokensregex/TokenSequencePattern.html) class.
+* Tregex documentation is found in the [TregexPattern](https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/trees/tregex/TregexPattern.html) class.
+* Semgrex documentation is found in the [SemgrexPattern](https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/semgraph/semgrex/SemgrexPattern.html) class.
 
 ## Licence
 DataLinguist is [licensed under the GPL v3 or later](https://github.com/simongray/datalinguist/blob/master/LICENCE). This copy-left licence is a continuation of [Stanford's own licensing terms for CoreNLP](https://stanfordnlp.github.io/CoreNLP/#license):
