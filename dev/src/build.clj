@@ -4,7 +4,7 @@
 
 (def lib 'dk.simongray/datalinguist)
 ;; if you want a version of MAJOR.MINOR.COMMITS:
-(def version (format "0.1.%s" (b/git-count-revs nil)))
+(def version (format "0.2.%s" (b/git-count-revs nil)))
 
 (defn ci
   "Run the CI pipeline of tests (and build the JAR)."

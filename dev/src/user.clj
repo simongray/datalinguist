@@ -44,7 +44,7 @@
        nlp
        tokens
        named-entity)
-  ;=> ("PERSON" "O" "O" "O" "LOCATION" "O")
+  ;=> ("PERSON" "O" "O" "O" "COUNTRY" "O")
 
   ;; lemmatisation
   (->> "She has beaten him before."

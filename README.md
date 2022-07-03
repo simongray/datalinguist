@@ -43,16 +43,16 @@ In addition to adding DataLinguist itself as a project dependency, you should th
 
 ```edn
 ;; Currently available precompiled language models in deps.edn format
-edu.stanford.nlp/stanford-corenlp$models             {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-arabic      {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-chinese     {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-english     {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-english-kbp {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-french      {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-german      {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-hungarian   {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-italian     {:mvn/version "4.3.2"}
-edu.stanford.nlp/stanford-corenlp$models-spanish     {:mvn/version "4.3.2"}
+edu.stanford.nlp/stanford-corenlp$models             {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-arabic      {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-chinese     {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-english     {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-english-kbp {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-french      {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-german      {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-hungarian   {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-italian     {:mvn/version "4.4.0"}
+edu.stanford.nlp/stanford-corenlp$models-spanish     {:mvn/version "4.4.0"}
 ```
 
 _Note that several [unofficial language models](https://stanfordnlp.github.io/CoreNLP/human-languages.html#models-for-other-languages) also exist!_
