@@ -23,11 +23,7 @@ Most Lisp dialects facilitate interactive development centred around a REPL. Clo
 > _<a name="name"><sup>†</sup></a> The name is a play on "datalingvist" - the Danish word for "computational linguist" - and Clojure's love of all things data. As a sidenote, the Danish translation of "computer scientist" is actually "datalog"!_
 
 ## Setup
-Major releases are available [on Clojars](https://clojars.org/dk.simongray/datalinguist):
-
-```edn
-dk.simongray/datalinguist {:mvn/version "0.1.163"}
-```
+Major releases are available [on Clojars](https://clojars.org/dk.simongray/datalinguist)—look there for instructions!
 
 The library can also be included as a `deps.edn` dependency by referencing a specific commit SHA in this repository:
 
