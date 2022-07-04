@@ -58,6 +58,8 @@ You will likely also need to increase the amount of memory allotted to your JVM 
 > _<a name="maven"><sup>††</sup></a> Stanford can sometimes be bit slow when it comes to uploading more recent versions of CoreNLP to Maven Central._
 
 ## How to use
+> If you just want to get going quick, refer to the [deps.edn example project](https://github.com/simongray/datalinguist-example).
+
 DataLinguist has a very simple API for executing various NLP operations. To perform any language processing task you will generally need to **1.** build an annotation pipeline, **2.** annotate some text, **3.** extract some of these annotations for analysis, and (optionally) **4.** datafy the annotations for more idiomatic use in Clojure.
 
 ### 1. Building an annotation pipeline
